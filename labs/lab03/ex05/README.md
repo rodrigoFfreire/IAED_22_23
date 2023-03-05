@@ -20,34 +20,16 @@ baz zap
 
 # Evaluation
 
-2023-03-02T17:17:20
+2023-03-03T12:35:02
 
 ## Test 1: [+ Accepted+].
 ## Test 2: [+ Accepted+].
 ## Test 3: [+ Accepted+].
-## Test 4: [- Wrong Answer-].
-
-- Your Output:
-```
-Disse: \
-
-foo bar
-////\\\\***\\\\
-
-```
-
-- Expected Output:
-```
-Disse: "ola, como estai?"
-foo bar
-////\\***\\
-
-```
+## Test 4: [+ Accepted+].
 
 
+## Number of passed tests: 4/4
 
-## Number of passed tests: 3/4
 
-
-Your code will not be reevaluated if you submit before 2023-03-02 17:18:20 @ Lisbon, Portugal. You need to wait 1 minute(s).
+Your code will not be reevaluated if you submit before 2023-03-03 12:36:02 @ Lisbon, Portugal. You need to wait 1 minute(s).
 
