@@ -1,1 +1,1 @@
-cp -R ../GitLab_Repo/lab* ./labs
+cp -R ../GitLab/lab* ./labs
