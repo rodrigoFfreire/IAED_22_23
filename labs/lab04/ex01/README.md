@@ -21,3 +21,19 @@ Podem usar o programa `valgrind` para tentar identificar o problema.
 ***
 ****
 ```
+
+
+# Evaluation
+
+2023-03-04T15:29:28
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+
+
+## Number of passed tests: 3/3
+
+
+Your code will not be reevaluated if you submit before 2023-03-04 15:30:28 @ Lisbon, Portugal. You need to wait 1 minute(s).
+
