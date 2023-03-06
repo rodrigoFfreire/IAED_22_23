@@ -72,21 +72,19 @@ void command_add_list_tracks(Network *system) {
 	arg1 = get_command_arguments(name, TRACK_NAME_MAX_SIZE);
 
 	if (!arg1) {
-		printf("Current tracks...\n");
+		list_all_tracks(system);
 		return;
-	}
-	if (arg1 == more_args) {
+	} else if (arg1 == more_args) {
 		arg2 = get_command_arguments(inverse, INVERSO_LENGTH + 1);
 	}
 
 	if (arg1 == one_arg || (arg1 == more_args && !arg2)) {
-		printf("Added track with name %s\n", name);
-		return;
+		create_track_list_stops(system, name, false);
 	} else if (arg2 >= one_arg && check_inverso_argument(inverse)) {
-		printf("Listing stops of <%s> in reverse...\n", name);
-		return;
+		create_track_list_stops(system, name, true);
+	} else {
+		printf(ERROR_SORT_OPTION);
 	}
-	printf(ERROR_SORT_OPTION);
 }
 
 /*
@@ -101,10 +99,10 @@ void command_add_list_stops(Network *system) {
 
 	arg1 = get_command_arguments(name, STOP_NAME_MAX_SIZE);
 	if (!arg1) {
-		printf("Current stops....\n");
+		list_all_stops(system);
 	} else if (arg1 == more_args) {
 		scanf("%lf %lf", &latitude, &longitude);
-		printf("Adding stop with <%s> <%16.12lf> <%16.12lf>\n", name, latitude, longitude);
+		printf("Adding stop with <%s> <%16.12f> <%16.12f>\n", name, latitude, longitude);
 	} else if (arg1 == one_arg) {
 		printf("Listing <%s> stop...\n", name);
 	}
@@ -123,7 +121,7 @@ void command_add_list_connections(Network *system) {
 	int arg1;
 
 	arg1 = get_command_arguments(name, TRACK_NAME_MAX_SIZE);
-	scanf("%s %s %lf %lf", name, start, end, cost, duration);
+	scanf("%s %s %s %lf %lf", name, start, end, &cost, &duration);
 
 }
 
@@ -167,7 +165,7 @@ int get_command_arguments(char arg[], int len) {
 }
 
 /*
- * Auxiliary Function checks if inverso argument is correct
+ * Auxiliary Function checks if `inverso` argument is correct
  * Return Values:
  * 1 -> argument is correct
  * 0 -> argument not correct

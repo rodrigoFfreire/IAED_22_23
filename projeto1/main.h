@@ -73,6 +73,12 @@ int check_inverso_argument(char inv[]);
 void setup_transport_system(Network *system);
 
 /* Command functions */
-void get_tracks(Network *system);
+void list_stops_aux(Network *system, char name[], int inverted, short len);
+
+void create_track_list_stops(Network *system, char name[], int inverted);
+
+void list_all_tracks(Network *system);
+
+void list_all_stops(Network *system);
 
 #endif
