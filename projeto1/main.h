@@ -22,12 +22,15 @@
 /* STRUCTS */
 typedef struct {
 	char name[STOP_NAME_MAX_SIZE];
-	float latitude;
-	float longitude;
+	double latitude;
+	double longitude;
 } Stop;
 
 typedef struct {
 	char name[TRACK_NAME_MAX_SIZE];
+	short stop_count;
+	double total_cost;
+	double total_duration;
 	Stop first;
 	Stop last;
 } Track;
@@ -36,32 +39,39 @@ typedef struct {
 	Track track;
 	Stop start;
 	Stop end;
-	float cost;
-	float duration;
+	double cost;
+	double duration;
 } Connection;
 
 typedef struct {
 	Track tracks[MAX_TRACKS];
 	Stop stops[MAX_STOPS];
 	Connection connections[MAX_CONNECTIONS];
+	short track_count;
+	short stop_count;
+	short connection_count;
 } TransportNetwork;
 
 /* Enums */
 enum get_command_args_FLAGS{no_args, one_arg, more_args};
+enum bool{false, true};
 
-/* Functions */
+/* main functions */
 int command_handler(TransportNetwork *system);
 
 void command_add_list_tracks(TransportNetwork *system);
 
-int command_add_list_stops(TransportNetwork *system);
+void command_add_list_stops(TransportNetwork *system);
 
-int command_add_list_connections(TransportNetwork *system);
+void command_add_list_connections(TransportNetwork *system);
 
-int command_list_intersections(TransportNetwork *system);
+void command_list_intersections(TransportNetwork *system);
 
 int get_command_arguments(char arg[], int len);
 
 int check_inverso_argument(char inv[]);
+
+/* Command functions */
+void get_tracks(TransportNetwork *system);
 
 #endif

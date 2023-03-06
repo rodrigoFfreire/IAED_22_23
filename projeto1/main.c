@@ -75,13 +75,13 @@ void command_add_list_tracks(TransportNetwork *system) {
 		return;
 	}
 	if (arg1 == more_args) {
-		arg2 = get_command_arguments(inverse, INVERSO_LENGTH);
+		arg2 = get_command_arguments(inverse, INVERSO_LENGTH + 1);
 	}
 
 	if (arg1 == one_arg || (arg1 == more_args && !arg2)) {
 		printf("Added track with name %s\n", name);
 		return;
-	} else if (arg2 == one_arg && check_inverso_argument(inverse)) {
+	} else if (arg2 >= one_arg && check_inverso_argument(inverse)) {
 		printf("Listing stops of <%s> in reverse...\n", name);
 		return;
 	}
@@ -93,8 +93,21 @@ void command_add_list_tracks(TransportNetwork *system) {
  *
  *
 */
-int command_add_list_stops(TransportNetwork *system) {
-	return 0;
+void command_add_list_stops(TransportNetwork *system) {
+	char name[STOP_NAME_MAX_SIZE];
+	double latitude, longitude;
+	int arg1;
+
+	arg1 = get_command_arguments(name, STOP_NAME_MAX_SIZE);
+	if (!arg1) {
+		printf("Current stops....\n");
+	} else if (arg1 == more_args) {
+		scanf("%lf %lf", &latitude, &longitude);
+		printf("Adding stop with <%s> <%16.12lf> <%16.12lf>\n", name, latitude, longitude);
+	} else if (arg1 == one_arg) {
+		printf("Listing <%s> stop...\n", name);
+	}
+	
 }
 
 /*
@@ -102,8 +115,15 @@ int command_add_list_stops(TransportNetwork *system) {
  *
  *
 */
-int command_add_list_connections(TransportNetwork *system) {
-	return 0;
+void command_add_list_connections(TransportNetwork *system) {
+	char name[TRACK_NAME_MAX_SIZE];
+	char start[STOP_NAME_MAX_SIZE], end[STOP_NAME_MAX_SIZE];
+	double cost, duration;
+	int arg1;
+
+	arg1 = get_command_arguments(name, TRACK_NAME_MAX_SIZE);
+	scanf("%s %s %lf %lf", name, start, end, cost, duration);
+
 }
 
 /*
@@ -111,8 +131,8 @@ int command_add_list_connections(TransportNetwork *system) {
  *
  *
 */
-int command_list_intersections(TransportNetwork *system) {
-	return 0;
+void command_list_intersections(TransportNetwork *system) {
+	return;
 }
 
 /*
@@ -153,7 +173,7 @@ int get_command_arguments(char arg[], int len) {
 */
 int check_inverso_argument(char inv[]) {
 	int i, len = strlen(inv);
-	if (len < 3) {
+	if (len < 3 || len > INVERSO_LENGTH) {
 		return 0;
 	}
 	for (i = 0; i < len; i++) {
