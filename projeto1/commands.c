@@ -4,17 +4,26 @@
  *   Description: Command Functions File
 */
 #include "main.h"
+#include <string.h>
 
 
-void get_tracks(TransportNetwork *system) {
-    int i, len = system->track_count;
-    for (i = 0; i < len; i++) {
-        printf("%s %s %s %d %d %lf %lf",
-            system->tracks[i].name,
-            system->tracks[i].first,
-            system->tracks[i].last,
-            system->tracks[i].total_cost,
-            system->tracks[i].total_duration
-        );
+void create_and_list_track(Network *system, char name[], int inverted) {
+    short i, j;
+    short *track_len = &(system->track_count);
+    short *connection_len = &(system->connection_count);
+    short last_stop;
+    for (i = 0; i < *track_len; i++) {
+        if (!strcmp(name, system->tracks[i].name)) {
+            for (j = 0; j < *connection_len; j++) {
+                if (!strcmp(name, system->connections[j].track.name)) {
+                    last_stop = j;
+                    printf("%s, ", system->connections[j].start.name);
+                }
+            }
+            printf("%s", system->connections[last_stop].end.name);
+            return;
+        }
     }
+    *track_len += 1;
+    strcpy(name, system->tracks[*track_len - 1].name); 
 }

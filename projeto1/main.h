@@ -28,7 +28,6 @@ typedef struct {
 
 typedef struct {
 	char name[TRACK_NAME_MAX_SIZE];
-	short stop_count;
 	double total_cost;
 	double total_duration;
 	Stop first;
@@ -50,28 +49,30 @@ typedef struct {
 	short track_count;
 	short stop_count;
 	short connection_count;
-} TransportNetwork;
+} Network;
 
 /* Enums */
 enum get_command_args_FLAGS{no_args, one_arg, more_args};
 enum bool{false, true};
 
 /* main functions */
-int command_handler(TransportNetwork *system);
+int command_handler(Network *system);
 
-void command_add_list_tracks(TransportNetwork *system);
+void command_add_list_tracks(Network *system);
 
-void command_add_list_stops(TransportNetwork *system);
+void command_add_list_stops(Network *system);
 
-void command_add_list_connections(TransportNetwork *system);
+void command_add_list_connections(Network *system);
 
-void command_list_intersections(TransportNetwork *system);
+void command_list_intersections(Network *system);
 
 int get_command_arguments(char arg[], int len);
 
 int check_inverso_argument(char inv[]);
 
+void setup_transport_system(Network *system);
+
 /* Command functions */
-void get_tracks(TransportNetwork *system);
+void get_tracks(Network *system);
 
 #endif

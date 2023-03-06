@@ -11,7 +11,8 @@
 
 /* Main Loop */
 int main() {
-	TransportNetwork system = {0};
+	Network system;
+	setup_transport_system(&system);
 
 	while (command_handler(&system));
 
@@ -24,7 +25,7 @@ int main() {
  * 1 -> Keep the program open after executing command
  * 0 -> Close the program
 */
-int command_handler(TransportNetwork *system) {
+int command_handler(Network *system) {
 	char option = getchar();
 
 	switch (option) {
@@ -63,7 +64,7 @@ int command_handler(TransportNetwork *system) {
  *   
  *
 */
-void command_add_list_tracks(TransportNetwork *system) {
+void command_add_list_tracks(Network *system) {
 	char name[TRACK_NAME_MAX_SIZE];
 	char inverse[INVERSO_LENGTH];
 	int arg1, arg2;
@@ -93,7 +94,7 @@ void command_add_list_tracks(TransportNetwork *system) {
  *
  *
 */
-void command_add_list_stops(TransportNetwork *system) {
+void command_add_list_stops(Network *system) {
 	char name[STOP_NAME_MAX_SIZE];
 	double latitude, longitude;
 	int arg1;
@@ -115,7 +116,7 @@ void command_add_list_stops(TransportNetwork *system) {
  *
  *
 */
-void command_add_list_connections(TransportNetwork *system) {
+void command_add_list_connections(Network *system) {
 	char name[TRACK_NAME_MAX_SIZE];
 	char start[STOP_NAME_MAX_SIZE], end[STOP_NAME_MAX_SIZE];
 	double cost, duration;
@@ -131,7 +132,7 @@ void command_add_list_connections(TransportNetwork *system) {
  *
  *
 */
-void command_list_intersections(TransportNetwork *system) {
+void command_list_intersections(Network *system) {
 	return;
 }
 
@@ -182,4 +183,10 @@ int check_inverso_argument(char inv[]) {
 		}
 	}
 	return 1;
+}
+
+void setup_transport_system(Network *system) {
+	system->track_count = 0;
+	system->connection_count = 0;
+	system->stop_count = 0;
 }
