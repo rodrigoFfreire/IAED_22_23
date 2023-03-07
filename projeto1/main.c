@@ -6,14 +6,16 @@
 #include "main.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 /* Main Loop */
 int main() {
-	Network system;
-	setup_transport_system(&system);
+	static Network system = {0};
+	setup_network_system(&system);
 
+	sizeof(Network);
 	while (command_handler(&system));
 
 	return 0;
@@ -67,7 +69,7 @@ int command_handler(Network *system) {
 void command_add_list_tracks(Network *system) {
 	char name[TRACK_NAME_MAX_SIZE];
 	char inverse[INVERSO_LENGTH];
-	int arg1, arg2;
+	int arg1 = 0, arg2 = 0, result;
 	
 	arg1 = get_command_arguments(name, TRACK_NAME_MAX_SIZE);
 
@@ -78,11 +80,8 @@ void command_add_list_tracks(Network *system) {
 		arg2 = get_command_arguments(inverse, INVERSO_LENGTH + 1);
 	}
 
-	if (arg1 == one_arg || (arg1 == more_args && !arg2)) {
-		create_track_list_stops(system, name, false);
-	} else if (arg2 >= one_arg && check_inverso_argument(inverse)) {
-		create_track_list_stops(system, name, true);
-	} else {
+	result = create_track_list_stops(system, name, check_inv(inverse), arg2);
+	if (!result) {
 		printf(ERROR_SORT_OPTION);
 	}
 }
@@ -95,18 +94,25 @@ void command_add_list_tracks(Network *system) {
 void command_add_list_stops(Network *system) {
 	char name[STOP_NAME_MAX_SIZE];
 	double latitude, longitude;
-	int arg1;
+	int arg1, result;
 
 	arg1 = get_command_arguments(name, STOP_NAME_MAX_SIZE);
+	
 	if (!arg1) {
 		list_all_stops(system);
+		
 	} else if (arg1 == more_args) {
 		scanf("%lf %lf", &latitude, &longitude);
-		printf("Adding stop with <%s> <%16.12f> <%16.12f>\n", name, latitude, longitude);
+		result = create_stop(system, name, latitude, longitude);
+		if (!result) {
+			printf(ERROR_STOP_EXISTS);
+		}
 	} else if (arg1 == one_arg) {
-		printf("Listing <%s> stop...\n", name);
+		result = get_stop(system, name, true);
+		if (!result) {
+			printf(ERROR_NO_STOP);
+		}
 	}
-	
 }
 
 /*
@@ -170,21 +176,25 @@ int get_command_arguments(char arg[], int len) {
  * 1 -> argument is correct
  * 0 -> argument not correct
 */
-int check_inverso_argument(char inv[]) {
-	int i, len = strlen(inv);
-	if (len < 3 || len > INVERSO_LENGTH) {
-		return 0;
-	}
-	for (i = 0; i < len; i++) {
-		if (inv[i] != INVERSO_ARGUMENT[i]) {
+int check_inv(char inv[]) {
+	int i, len = strlen(inv) + 1;	/* accounting string size with '\0' */
+	for (i = 0; inv[i] != '\0'; i++) {
+		if (len > INVERSO_LENGTH || (len > 4 && len < INVERSO_LENGTH)) {
 			return 0;
+		} else {
+			if (inv[i] != INVERSO[i]) {
+				return 0;
+			}
 		}
 	}
 	return 1;
 }
 
-void setup_transport_system(Network *system) {
+
+
+void setup_network_system(Network *system) {
 	system->track_count = 0;
 	system->connection_count = 0;
 	system->stop_count = 0;
+
 }
