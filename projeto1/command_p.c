@@ -6,7 +6,6 @@
 #include "main.h"
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
 
 
@@ -18,7 +17,7 @@ void list_all_stops(Network *system) {
             system->stops[i].name,
             system->stops[i].latitude,
             system->stops[i].longitude,
-            system->stops[i].n_tracks
+            system->stops[i].n_lines
         );
     }
 }
@@ -50,7 +49,7 @@ int create_stop(Network *system, char name[], float lat, float lon) {
             strcpy(system->stops[*len - 1].name, name);
             system->stops[*len - 1].latitude = lat;
             system->stops[*len - 1].longitude = lon;
-            system->stops[*len - 1].n_tracks = 0;
+            system->stops[*len - 1].n_lines = 0;
         }
         return 1;
     } else {

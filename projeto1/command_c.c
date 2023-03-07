@@ -9,46 +9,46 @@
 
 
 
-void list_all_tracks(Network *system) {
-	short i, j, *track_len = &(system->track_count);
-	short connect_len = system->connection_count;
+void list_all_lines(Network *system) {
+	short i, j, *line_len = &(system->line_count);
+	short connect_len = system->link_count;
 
-	for (i = 0; i < *track_len; i++) {
-		printf("%s ",system->tracks[i].name);
+	for (i = 0; i < *line_len; i++) {
+		printf("%s ",system->lines[i].name);
 		for (j = 0; j < connect_len; j++) {
-			if (!strcmp(system->tracks[i].name,
-                        system->connections[j].track.name)) {
+			if (!strcmp(system->lines[i].name,
+                        system->links[j].line->name)) {
 				printf("%s %s ",
-					system->tracks[i].first.name,
-					system->tracks[i].last.name
+					system->lines[i].first->name,
+					system->lines[i].last->name
 				);
 				break;
 			}
 		}
 		printf("%d %.2f %.2f\n",
-			system->tracks[i].n_stops,
-			system->tracks[i].total_cost,
-			system->tracks[i].total_duration
+			system->lines[i].n_stops,
+			system->lines[i].total_cost,
+			system->lines[i].total_duration
 		);
 	}
 }
 
 
-int create_track_list_stops(Network *system, char name[],int invert,int arg2) {
+int create_line_list_stops(Network *system, char name[],int invert,int arg2) {
 	short i;
-	short *track_len = &(system->track_count);
-	short connection_len = system->connection_count;
+	short *line_len = &(system->line_count);
+	short link_len = system->link_count;
 
 	if (arg2 && !invert) {
 		return 0;
 	} else {
-		for (i = 0; i < *track_len; i++) {
-			if (!strcmp(name, system->tracks[i].name)) {
-				list_stops(system, name, invert, connection_len);
+		for (i = 0; i < *line_len; i++) {
+			if (!strcmp(name, system->lines[i].name)) {
+				list_stops(system, name, invert, link_len);
 				return 1;
 			}
 		}
-		create_track(system, name, track_len);
+		create_line(system, name, line_len);
 	}
 	return 1;
 }
@@ -58,30 +58,30 @@ void list_stops(Network *system, char name[], int invert, short len) {
 	short j, last_stop;
 	if (!invert) {
 		for (j = 0; j < len; j++) {
-			if (!strcmp(name, system->connections[j].track.name)) {
+			if (!strcmp(name, system->links[j].line->name)) {
 				last_stop = j;
-				printf("%s, ", system->connections[j].start.name);
+				printf("%s, ", system->links[j].start->name);
 			}
 		}
-		printf("%s\n", system->connections[last_stop].end.name);
+		printf("%s\n", system->links[last_stop].end->name);
 	} else {
 		for (j = len - 1; j >= 0; j--) {
-			if (!strcmp(name, system->connections[j].track.name)) {
+			if (!strcmp(name, system->links[j].line->name)) {
 				last_stop = j;
-				printf("%s, ", system->connections[j].end.name);
+				printf("%s, ", system->links[j].end->name);
 			}
 		}
-		printf("%s\n", system->connections[last_stop].start.name);
+		printf("%s\n", system->links[last_stop].start->name);
 	}
 }
 
 
-void create_track(Network *system, char name[], short *len) {
-	if (*len < MAX_TRACKS) {
+void create_line(Network *system, char name[], short *len) {
+	if (*len < MAX_LINES) {
 		*len += 1;
-		strcpy(system->tracks[*len - 1].name, name);
-        system->tracks[*len - 1].n_stops = 0;
-		system->tracks[*len - 1].total_cost = 0;
-		system->tracks[*len - 1].total_duration = 0;
+		strcpy(system->lines[*len - 1].name, name);
+        system->lines[*len - 1].n_stops = 0;
+		system->lines[*len - 1].total_cost = 0;
+		system->lines[*len - 1].total_duration = 0;
 	}
 }

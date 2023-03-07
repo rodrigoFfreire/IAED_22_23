@@ -32,7 +32,7 @@ int command_handler(Network *system) {
 
 	switch (option) {
 		case 'c':
-			command_add_list_tracks(system);
+			command_add_list_lines(system);
 			return 1;
 			break;
 
@@ -42,7 +42,7 @@ int command_handler(Network *system) {
 			break;
 
 		case 'l':
-			command_add_list_connections(system);
+			command_add_list_links(system);
 			return 1;
 			break;
 
@@ -62,25 +62,25 @@ int command_handler(Network *system) {
 }
 
 /*
- * Function for adding and listing tracks - 'c' command
+ * Function for adding and listing lines - 'c' command
  *   
  *
 */
-void command_add_list_tracks(Network *system) {
-	char name[TRACK_NAME_MAX_SIZE];
+void command_add_list_lines(Network *system) {
+	char name[LINE_NAME_MAX_SIZE];
 	char inverse[INVERSO_LENGTH];
 	int arg1 = 0, arg2 = 0, result;
 	
-	arg1 = get_command_arguments(name, TRACK_NAME_MAX_SIZE);
+	arg1 = get_command_arguments(name, LINE_NAME_MAX_SIZE);
 
 	if (!arg1) {
-		list_all_tracks(system);
+		list_all_lines(system);
 		return;
 	} else if (arg1 == more_args) {
 		arg2 = get_command_arguments(inverse, INVERSO_LENGTH + 1);
 	}
 
-	result = create_track_list_stops(system, name, check_inv(inverse), arg2);
+	result = create_line_list_stops(system, name, check_inv(inverse), arg2);
 	if (!result) {
 		printf(ERROR_SORT_OPTION);
 	}
@@ -116,23 +116,36 @@ void command_add_list_stops(Network *system) {
 }
 
 /*
- * Function for adding and listing connections between stops - 'l' command
+ * Function for adding and listing links between stops - 'l' command
  *
  *
 */
-void command_add_list_connections(Network *system) {
-	char name[TRACK_NAME_MAX_SIZE];
+void command_add_links(Network *system) {
+	char name[LINE_NAME_MAX_SIZE];
 	char start[STOP_NAME_MAX_SIZE], end[STOP_NAME_MAX_SIZE];
 	double cost, duration;
-	int arg1;
+	int arg1, result;
+	char names[3] = {name, start, end};
+	double cost_dur[2] = {cost, duration};
 
-	arg1 = get_command_arguments(name, TRACK_NAME_MAX_SIZE);
+	arg1 = get_command_arguments(name, LINE_NAME_MAX_SIZE);
 	scanf("%s %s %s %lf %lf", name, start, end, &cost, &duration);
+
+	result = create_link(system, names, cost_dur);
+	if (result == -1) {
+		printf(ERROR_NO_LINE);
+	} else if (result == -2) {
+		printf(ERROR_NO_STOP);
+	} else if (result == -3) {
+		printf(ERROR_LINK);
+	} else if (result == -4) {
+		printf(ERROR_ILLEGAL_VALUE);
+	}
 
 }
 
 /*
- * Function for listing track intersections - 'i' command
+ * Function for listing line intersections - 'i' command
  *
  *
 */
@@ -193,8 +206,8 @@ int check_inv(char inv[]) {
 
 
 void setup_network_system(Network *system) {
-	system->track_count = 0;
-	system->connection_count = 0;
+	system->line_count = 0;
+	system->link_count = 0;
 	system->stop_count = 0;
 
 }
