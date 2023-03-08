@@ -10,10 +10,10 @@
 
 
 void list_all_lines(Network *system) {
-	short i, j, *line_len = &(system->line_count);
+	short i, j, line_len = system->line_count;
 	short connect_len = system->link_count;
 
-	for (i = 0; i < *line_len; i++) {
+	for (i = 0; i < line_len; i++) {
 		printf("%s ",system->lines[i].name);
 		for (j = 0; j < connect_len; j++) {
 			if (!strcmp(system->lines[i].name,
@@ -56,7 +56,7 @@ int create_line_list_stops(Network *system, char name[],int invert,int arg2) {
 
 void list_stops(Network *system, char name[], int invert, short len) {
 	short j, last_stop;
-	if (!invert) {
+	if (!invert && len > 0) {
 		for (j = 0; j < len; j++) {
 			if (!strcmp(name, system->links[j].line->name)) {
 				last_stop = j;
@@ -64,7 +64,7 @@ void list_stops(Network *system, char name[], int invert, short len) {
 			}
 		}
 		printf("%s\n", system->links[last_stop].end->name);
-	} else {
+	} else if (len > 0) {
 		for (j = len - 1; j >= 0; j--) {
 			if (!strcmp(name, system->links[j].line->name)) {
 				last_stop = j;
@@ -84,4 +84,30 @@ void create_line(Network *system, char name[], short *len) {
 		system->lines[*len - 1].total_cost = 0;
 		system->lines[*len - 1].total_duration = 0;
 	}
+}
+
+
+void update_line(Network *system, short *ids, char init) {
+	short i, n_stops, count = 0, len = system->link_count;
+	char first[STOP_NAME_MAX_SIZE], last[STOP_NAME_MAX_SIZE];
+	
+	if (init) {
+		system->lines[ids[0]].first = &system->stops[ids[1]];
+		system->lines[ids[0]].last = &system->stops[ids[2]];
+	}
+	system->lines[ids[0]].total_cost = system->lines[ids[0]].total_duration = 0;
+	for (i = 0; i < len; i++) {
+		if(!strcmp(system->links[i].line->name, system->lines[ids[0]].name)) {
+			if (!count) {
+				system->lines[ids[0]].first = system->links[i].start;
+			} else {
+				system->lines[ids[0]].last = system->links[i].end;
+			}
+			count++;
+			system->lines[ids[0]].total_cost += system->links[i].cost;
+			system->lines[ids[0]].total_duration += system->links[i].duration;
+		}
+	}
+	n_stops = (!strcmp(first, last)) ? count : count + 1;
+	system->lines[ids[0]].n_stops = n_stops;
 }

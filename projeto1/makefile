@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS= -g -ansi -pedantic
+CFLAGS= -g -Wall -Wextra -Werror -ansi -pedantic
 
-proj1: main.c command_c.c command_p.c main.h
-	$(CC) $(CFLAGS) main.c command_c.c command_p.c -o proj1
+proj1: *.c *.h
+	$(CC) $(CFLAGS) main.c command_c.c command_p.c command_l.c -o proj1
 
 
 clean:

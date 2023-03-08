@@ -38,7 +38,6 @@ typedef struct {
 	double total_cost;
 	double total_duration;
 	short n_stops;
-	unsigned char loop;
 	Stop *first;
 	Stop *last;
 } Line;
@@ -74,13 +73,13 @@ void command_add_list_stops(Network *system);
 
 void command_add_links(Network *system);
 
-void command_list_intersections(Network *system);
+/* void command_list_intersections(Network *system); */
 
 int get_command_arguments(char arg[], int len);
 
 int check_inv(char inv[]);
 
-void setup_network_system(Network *system);
+void setup_system(Network *system);
 
 
 /* Command 'c' functions */
@@ -93,6 +92,8 @@ int create_line_list_stops(Network *system, char name[], int invert, int arg2);
 
 void list_all_lines(Network *system);
 
+void update_line(Network *system, short *ids, char init);
+
 /* Command 'p' functions */
 void list_all_stops(Network *system);
 
@@ -100,15 +101,21 @@ int get_stop(Network *system, char name[], char print);
 
 int create_stop(Network *system, char name[], float lat, float lon);
 
+/* void update_stops(Network *system, short *ids); */
+
 /* Command 'l' functions */
-int create_link(Network *system, char *names, double *cost_dur);
+int create_link(Network *system, char **names, double *cost_dur);
 
-void add_link_start(Network *system, char *names, double *cost_dur, short pos);
+int add_link(Network *system, char **names, double *cost_dur);
 
-void add_link_end(Network *system, char *names, double *cost_dur, short pos);
+void add_link_aux(Network *system, char **names, double *cost_dur, char pos);
 
 short get_line_id(Network *system, char *name);
 
 short get_stop_id(Network *system, char *name);
+
+void configure_link(Network *system, short *ids, double *cost_dur, short pos);
+
+void move_links(Network *system, short pos);
 
 #endif

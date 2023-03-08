@@ -56,3 +56,8 @@ int create_stop(Network *system, char name[], float lat, float lon) {
         return 0;
     }
 }
+
+
+/* void update_stops(Network *system, short *ids) {
+    return;
+} */

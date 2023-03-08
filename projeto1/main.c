@@ -13,9 +13,8 @@
 /* Main Loop */
 int main() {
 	static Network system = {0};
-	setup_network_system(&system);
+	setup_system(&system);
 
-	sizeof(Network);
 	while (command_handler(&system));
 
 	return 0;
@@ -42,12 +41,12 @@ int command_handler(Network *system) {
 			break;
 
 		case 'l':
-			command_add_list_links(system);
+			command_add_links(system);
 			return 1;
 			break;
 
 		case 'i':
-			command_list_intersections(system);
+			/* command_list_intersections(system); */
 			return 1;
 			break;
 
@@ -105,12 +104,12 @@ void command_add_list_stops(Network *system) {
 		scanf("%lf %lf", &latitude, &longitude);
 		result = create_stop(system, name, latitude, longitude);
 		if (!result) {
-			printf(ERROR_STOP_EXISTS);
+			printf("<%s>: %s", name, ERROR_STOP_EXISTS);
 		}
 	} else if (arg1 == one_arg) {
 		result = get_stop(system, name, true);
 		if (!result) {
-			printf(ERROR_NO_STOP);
+			printf("<%s>: %s", name, ERROR_NO_STOP);
 		}
 	}
 }
@@ -121,27 +120,31 @@ void command_add_list_stops(Network *system) {
  *
 */
 void command_add_links(Network *system) {
-	char name[LINE_NAME_MAX_SIZE];
-	char start[STOP_NAME_MAX_SIZE], end[STOP_NAME_MAX_SIZE];
+	double cost_dur[2];
 	double cost, duration;
-	int arg1, result;
-	char names[3] = {name, start, end};
-	double cost_dur[2] = {cost, duration};
+	char names[3][STOP_NAME_MAX_SIZE], *ptr[3], **names_ptr;
+	int result;
+	ptr[0] = &names[0][0], ptr[1] = &names[1][0], ptr[2] = &names[2][0];
+    names_ptr = &(*ptr);
 
-	arg1 = get_command_arguments(name, LINE_NAME_MAX_SIZE);
-	scanf("%s %s %s %lf %lf", name, start, end, &cost, &duration);
+	get_command_arguments(names[0], LINE_NAME_MAX_SIZE);
+	get_command_arguments(names[1], STOP_NAME_MAX_SIZE);
+	get_command_arguments(names[2], STOP_NAME_MAX_SIZE);
+	scanf("%lf %lf", &cost, &duration);
+	cost_dur[0] = cost, cost_dur[1] = duration;
 
-	result = create_link(system, names, cost_dur);
+	result = create_link(system, names_ptr, cost_dur);
 	if (result == -1) {
-		printf(ERROR_NO_LINE);
+		printf("<%s>: %s", names[0], ERROR_NO_LINE);
 	} else if (result == -2) {
-		printf(ERROR_NO_STOP);
+		printf("<%s>: %s", names[1], ERROR_NO_STOP);
 	} else if (result == -3) {
-		printf(ERROR_LINK);
+		printf("<%s>: %s", names[2], ERROR_NO_STOP);
 	} else if (result == -4) {
+		printf(ERROR_LINK);
+	} else if (result == -5) {
 		printf(ERROR_ILLEGAL_VALUE);
 	}
-
 }
 
 /*
@@ -149,9 +152,9 @@ void command_add_links(Network *system) {
  *
  *
 */
-void command_list_intersections(Network *system) {
+/* void command_list_intersections(Network *system) {
 	return;
-}
+} */
 
 /*
  * Auxiliary Function to obtain optional command arguments
@@ -160,7 +163,7 @@ void command_list_intersections(Network *system) {
  * 1 -> One argument found
  * 2 -> More than one argument found
 */
-int get_command_arguments(char arg[], int len) {
+int get_command_arguments(char *arg, int len) {
 	int i = 0, quotes = 0, flag = no_args;
 	char c;
 
@@ -205,9 +208,22 @@ int check_inv(char inv[]) {
 
 
 
-void setup_network_system(Network *system) {
-	system->line_count = 0;
-	system->link_count = 0;
-	system->stop_count = 0;
+void setup_system(Network *system) {
+	int i;
+	static Stop stop0 = {0};
+	static Line line0 = {0};
+	static Link link0 = {0};
+	system->line_count = 0, system->link_count = 0, system->stop_count = 0;
+	line0.first = &stop0, line0.last = &stop0;
+	link0.line = &line0, link0.start = &stop0, link0.end = &stop0;
 
+	for (i = 0; i < MAX_STOPS; i++) {
+		system->stops[i] = stop0;
+	}
+	for (i = 0; i < MAX_LINES; i++) {
+		system->lines[i] = line0;
+	}
+	for (i = 0; i < MAX_LINKS; i++) {
+		system->links[i] = link0;
+	}
 }
