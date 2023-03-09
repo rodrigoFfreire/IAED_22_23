@@ -27,40 +27,41 @@
 
 /* STRUCTS */
 typedef struct {
-	char name[STOP_NAME_MAX_SIZE];
-	unsigned char n_lines;
-	double latitude;
-	double longitude;
+    char name[STOP_NAME_MAX_SIZE];
+    unsigned char n_lines;
+    double latitude;
+    double longitude;
 } Stop;
 
 typedef struct {
-	char name[LINE_NAME_MAX_SIZE];
-	double total_cost;
-	double total_duration;
-	short n_stops;
-	Stop *first;
-	Stop *last;
+    char name[LINE_NAME_MAX_SIZE];
+    double total_cost;
+    double total_duration;
+    short n_stops;
+    Stop *first;
+    Stop *last;
 } Line;
 
 typedef struct {
-	Line *line;
-	Stop *start;
-	Stop *end;
-	double cost;
-	double duration;
+    Line *line;
+    Stop *start;
+    Stop *end;
+    double cost;
+    double duration;
 } Link;
 
 typedef struct {
-	Line lines[MAX_LINES];
-	Stop stops[MAX_STOPS];
-	Link links[MAX_LINKS];
-	short line_count;
-	short stop_count;
-	short link_count;
+    Line lines[MAX_LINES];
+    Stop stops[MAX_STOPS];
+    Link links[MAX_LINKS];
+    short line_count;
+    short stop_count;
+    short link_count;
 } Network;
 
 /* Enums */
 enum get_command_args_FLAGS{no_args, one_arg, more_args};
+enum array_control{create, expand, delete};
 enum bool{false, true};
 
 /* main functions */
@@ -73,7 +74,7 @@ void command_add_list_stops(Network *system);
 
 void command_add_links(Network *system);
 
-/* void command_list_intersections(Network *system); */
+void command_list_intersections(Network *system);
 
 int get_command_arguments(char arg[], int len);
 
@@ -103,7 +104,7 @@ int create_stop(Network *system, char name[], double lat, double lon);
 
 void update_stop(Network *system, short stop_id);
 
-int exists_in(unsigned char *line_ids, unsigned char n);
+int line_exists(unsigned char *line_ids, unsigned char n);
 
 
 /* Command 'l' functions */
@@ -120,5 +121,15 @@ short get_stop_id(Network *system, char *name);
 void configure_link(Network *system, short *ids, double *cost_dur, short pos);
 
 void move_links(Network *system, short pos);
+
+
+/* Command 'i' functions */
+void print_intersections(Network *system, char *stop_name);
+
+int line_name_exists(char **lines, char *name, short *len);
+
+void array_control(char ***arr, short *len, int mode);
+
+void selection_sort(char **arr, short len);
 
 #endif

@@ -59,7 +59,7 @@ int create_stop(Network *system, char name[], double lat, double lon) {
 }
 
 
-int exists_in(unsigned char *line_ids, unsigned char id) {
+int line_exists(unsigned char *line_ids, unsigned char id) {
     unsigned char i, len = line_ids[0];
     for (i = 1; i <= len; i++) {
         if (line_ids[i] == id) {
@@ -81,7 +81,7 @@ void update_stop(Network *system, short stop_id) {
             !strcmp(system->links[i].end->name,
                     system->stops[stop_id].name)) {
             curr_line_id = get_line_id(system, system->links[i].line->name);
-            if (!exists_in(line_ids, curr_line_id)) {
+            if (!line_exists(line_ids, curr_line_id)) {
                 line_ids = realloc(
                     line_ids,
                     (line_ids[0] + 2)*sizeof(unsigned char)
