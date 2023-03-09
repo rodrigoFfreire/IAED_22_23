@@ -99,7 +99,7 @@ void list_all_stops(Network *system);
 
 int get_stop(Network *system, char name[], char print);
 
-int create_stop(Network *system, char name[], float lat, float lon);
+int create_stop(Network *system, char name[], double lat, double lon);
 
 /* void update_stops(Network *system, short *ids); */
 

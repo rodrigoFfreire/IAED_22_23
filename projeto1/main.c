@@ -104,12 +104,12 @@ void command_add_list_stops(Network *system) {
 		scanf("%lf %lf", &latitude, &longitude);
 		result = create_stop(system, name, latitude, longitude);
 		if (!result) {
-			printf("<%s>: %s", name, ERROR_STOP_EXISTS);
+			printf("%s: %s", name, ERROR_STOP_EXISTS);
 		}
 	} else if (arg1 == one_arg) {
 		result = get_stop(system, name, true);
 		if (!result) {
-			printf("<%s>: %s", name, ERROR_NO_STOP);
+			printf("%s: %s", name, ERROR_NO_STOP);
 		}
 	}
 }
@@ -135,11 +135,11 @@ void command_add_links(Network *system) {
 
 	result = create_link(system, names_ptr, cost_dur);
 	if (result == -1) {
-		printf("<%s>: %s", names[0], ERROR_NO_LINE);
+		printf("%s: %s", names[0], ERROR_NO_LINE);
 	} else if (result == -2) {
-		printf("<%s>: %s", names[1], ERROR_NO_STOP);
+		printf("%s: %s", names[1], ERROR_NO_STOP);
 	} else if (result == -3) {
-		printf("<%s>: %s", names[2], ERROR_NO_STOP);
+		printf("%s: %s", names[2], ERROR_NO_STOP);
 	} else if (result == -4) {
 		printf(ERROR_LINK);
 	} else if (result == -5) {

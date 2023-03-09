@@ -13,7 +13,7 @@ void list_all_stops(Network *system) {
     short i, *len = &(system->stop_count);
 
     for (i = 0; i < *len; i++) {
-        printf("%s: %16.12lf %16.12lf %d\n",
+        printf("%s: %16.12f %16.12f %d\n",
             system->stops[i].name,
             system->stops[i].latitude,
             system->stops[i].longitude,
@@ -40,7 +40,7 @@ int get_stop(Network *system, char name[], char print) {
 }
 
 
-int create_stop(Network *system, char name[], float lat, float lon) {
+int create_stop(Network *system, char name[], double lat, double lon) {
     short *len = &(system->stop_count);
 
     if (!get_stop(system, name, false)) {
