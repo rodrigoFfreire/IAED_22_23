@@ -13,7 +13,7 @@ void list_all_stops(Network *system) {
     short i, *len = &(system->stop_count);
 
     for (i = 0; i < *len; i++) {
-        printf("%s: %16.12f %16.12f %d\n",
+        printf("%s: %16.12lf %16.12lf %d\n",
             system->stops[i].name,
             system->stops[i].latitude,
             system->stops[i].longitude,
@@ -29,7 +29,7 @@ int get_stop(Network *system, char name[], char print) {
     for (i = 0; i < *len; i++) {
         if (!strcmp(name, system->stops[i].name)) {
             if (print)
-                printf("%16.12f %16.12f\n",
+                printf("%16.12lf %16.12lf\n",
                     system->stops[i].latitude,
                     system->stops[i].longitude
                 );
@@ -56,8 +56,3 @@ int create_stop(Network *system, char name[], float lat, float lon) {
         return 0;
     }
 }
-
-
-/* void update_stops(Network *system, short *ids) {
-    return;
-} */
