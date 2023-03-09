@@ -54,6 +54,10 @@ int command_handler(Network *system) {
 			return 0;
 			break;
 
+		case 'g':
+			printf("\x1b[2J\n\x1b[H");
+			return 1;
+			break;
 		default: /* Default Case: Unknown Commands */
 			return 1;
 			break;

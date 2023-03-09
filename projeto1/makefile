@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -g -O3 -Wall -Wextra -Werror -ansi -pedantic
+CFLAGS= -g -Wall -Wextra -Werror -ansi -pedantic
 
 proj1: *.c *.h
 	$(CC) $(CFLAGS) main.c command_c.c command_p.c command_l.c -o proj1

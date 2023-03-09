@@ -83,7 +83,6 @@ void setup_system(Network *system);
 
 
 /* Command 'c' functions */
-
 void list_stops(Network *system, char name[], int invert, short len);
 
 void create_line(Network *system, char name[], short *len);
@@ -94,6 +93,7 @@ void list_all_lines(Network *system);
 
 void update_line(Network *system, short *ids, char init);
 
+
 /* Command 'p' functions */
 void list_all_stops(Network *system);
 
@@ -101,7 +101,10 @@ int get_stop(Network *system, char name[], char print);
 
 int create_stop(Network *system, char name[], double lat, double lon);
 
-/* void update_stops(Network *system, short *ids); */
+void update_stop(Network *system, short stop_id);
+
+int exists_in(unsigned char *line_ids, unsigned char n);
+
 
 /* Command 'l' functions */
 int create_link(Network *system, char **names, double *cost_dur);

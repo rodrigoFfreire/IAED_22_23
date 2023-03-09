@@ -34,7 +34,7 @@ void list_all_lines(Network *system) {
 }
 
 
-int create_line_list_stops(Network *system, char name[],int invert,int arg2) {
+int create_line_list_stops(Network *system, char *name, int invert, int arg2) {
 	short i;
 	short *line_len = &(system->line_count);
 	short link_len = system->link_count;
@@ -55,7 +55,7 @@ int create_line_list_stops(Network *system, char name[],int invert,int arg2) {
 
 
 void list_stops(Network *system, char name[], int invert, short len) {
-	short j, last_stop;
+	short j, last_stop = 0;
 	if (!invert && len > 0) {
 		for (j = 0; j < len; j++) {
 			if (!strcmp(name, system->links[j].line->name)) {
@@ -63,7 +63,9 @@ void list_stops(Network *system, char name[], int invert, short len) {
 				printf("%s, ", system->links[j].start->name);
 			}
 		}
-		printf("%s\n", system->links[last_stop].end->name);
+		if (!strcmp(name, system->links[last_stop].line->name)) {
+			printf("%s\n", system->links[last_stop].end->name);
+		}
 	} else if (len > 0) {
 		for (j = len - 1; j >= 0; j--) {
 			if (!strcmp(name, system->links[j].line->name)) {
@@ -71,7 +73,9 @@ void list_stops(Network *system, char name[], int invert, short len) {
 				printf("%s, ", system->links[j].end->name);
 			}
 		}
-		printf("%s\n", system->links[last_stop].start->name);
+		if (!strcmp(name, system->links[last_stop].line->name)) {
+			printf("%s\n", system->links[last_stop].start->name);
+		}
 	}
 }
 
@@ -88,7 +92,7 @@ void create_line(Network *system, char name[], short *len) {
 
 
 void update_line(Network *system, short *ids, char init) {
-	short i, n_stops, count = 0, len = system->link_count;
+	short i, count = 0, len = system->link_count;
 	char first[STOP_NAME_MAX_SIZE], last[STOP_NAME_MAX_SIZE];
 	
 	if (init) {
@@ -110,6 +114,5 @@ void update_line(Network *system, short *ids, char init) {
 			system->lines[ids[0]].total_duration += system->links[i].duration;
 		}
 	}
-	n_stops = (!strcmp(first, last)) ? count : count + 1;
-	system->lines[ids[0]].n_stops = n_stops;
+	system->lines[ids[0]].n_stops = count + 1;	/* Each link has 2 stops */
 }

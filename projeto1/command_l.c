@@ -81,6 +81,8 @@ void add_link_aux(Network *system, char **names, double *cost_dur, char pos) {
     } else {
         update_line(system, ids, false);
     }
+    update_stop(system, ids[1]);
+    update_stop(system, ids[2]);
 }
 
 
