@@ -2,8 +2,8 @@
 .SUFFIXES: .in .out .diff
 MAKEFLAGS += --no-print-directory # No entering and leaving messages
 SHELL := /bin/bash # Execute command with bash
-OK="\e[1;32mtest $< PASSED\e[0m"
-KO="\e[1;31mtest $< FAILED\e[0m"
+OK="\x1b[1;32mtest $< PASSED\x1b[0m"
+KO="\x1b[1;31mtest $< FAILED\x1b[0m"
 EXE=../projeto1/proj1
 LOG=tests.log
 
