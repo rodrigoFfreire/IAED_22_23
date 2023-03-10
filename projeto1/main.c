@@ -12,8 +12,11 @@
 
 /* Main Loop */
 int main() {
-    static Network system = {0};
-    setup_system(&system);
+    Stop stop0 = {0};
+    Line line0 = {0};
+    Link link0 = {0};
+    Network system = {0};
+    setup_system(&system, &stop0, &line0, &link0);
     
     while (command_handler(&system));
 
@@ -60,9 +63,10 @@ void command_add_list_lines(Network *system) {
         return;
     } else if (arg1 == more_args) {
         arg2 = get_command_arguments(inverse, INVERSO_LENGTH + 1);
+        result = create_line_list_stops(system, name, check_inv(inverse), arg2);
+    } else if (arg1 == one_arg) {
+        result = create_line_list_stops(system, name, false, false);
     }
-
-    result = create_line_list_stops(system, name, check_inv(inverse), arg2);
     if (!result) {
         printf(ERROR_SORT_OPTION);
     }
@@ -180,7 +184,7 @@ int get_command_arguments(char *arg, int len) {
  * 0 -> argument not correct
 */
 int check_inv(char inv[]) {
-    int i, len = get_len_str(inv);
+    int i, len = strlen(inv) + 1;
     for (i = 0; inv[i] != '\0'; i++) {
         if (len > INVERSO_LENGTH || (len > 4 && len < INVERSO_LENGTH)) {
             return 0;
@@ -193,29 +197,20 @@ int check_inv(char inv[]) {
     return 1;
 }
 
-int get_len_str(char *str) {
-    int i = 0;
-    for (i = 0; str[i] != '\0'; i++);
-    return i + 1;
-}
 
-
-void setup_system(Network *system) {
+void setup_system(Network *system, Stop *stop0, Line *line0, Link *link0) {
     int i;
-    static Stop stop0 = {0};
-    static Line line0 = {0};
-    static Link link0 = {0};
     system->line_count = 0, system->link_count = 0, system->stop_count = 0;
-    line0.first = &stop0, line0.last = &stop0;
-    link0.line = &line0, link0.start = &stop0, link0.end = &stop0;
+    line0->first = stop0, line0->last = stop0;
+    link0->line = line0, link0->start = stop0, link0->end = stop0;
 
     for (i = 0; i < MAX_STOPS; i++) {
-        system->stops[i] = stop0;
+        system->stops[i] = *stop0;
     }
     for (i = 0; i < MAX_LINES; i++) {
-        system->lines[i] = line0;
+        system->lines[i] = *line0;
     }
     for (i = 0; i < MAX_LINKS; i++) {
-        system->links[i] = link0;
+        system->links[i] = *link0;
     }
 }

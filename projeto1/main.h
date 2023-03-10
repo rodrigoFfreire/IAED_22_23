@@ -81,9 +81,7 @@ int get_command_arguments(char arg[], int len);
 
 int check_inv(char inv[]);
 
-int get_len_str(char *str);
-
-void setup_system(Network *system);
+void setup_system(Network *system, Stop *stop, Line *line, Link *link);
 
 
 /* Command 'c' functions */
