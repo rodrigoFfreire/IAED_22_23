@@ -38,6 +38,7 @@ typedef struct {
     double total_cost;
     double total_duration;
     short n_stops;
+    char loop;
     Stop *first;
     Stop *last;
 } Line;
@@ -80,6 +81,8 @@ int get_command_arguments(char arg[], int len);
 
 int check_inv(char inv[]);
 
+int get_len_str(char *str);
+
 void setup_system(Network *system);
 
 
@@ -121,6 +124,8 @@ short get_stop_id(Network *system, char *name);
 void configure_link(Network *system, short *ids, double *cost_dur, short pos);
 
 void move_links(Network *system, short pos);
+
+void compact_ids(Network *system, short *ids, char **names);
 
 
 /* Command 'i' functions */

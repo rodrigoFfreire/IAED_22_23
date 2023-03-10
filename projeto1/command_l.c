@@ -30,9 +30,8 @@ int create_link(Network *system, char **names, double *cost_dur) {
         if (result == -1) {
             return -4;
         }
-        return 1;
     }
-    return 0;
+    return 1;
 }
 
 
@@ -57,32 +56,29 @@ int add_link(Network *system, char **names, double *cost_dur) {
 
 
 void add_link_aux(Network *system, char **names, double *cost_dur, char pos) {
-    short i, len = system->link_count;
-    short lineId = get_line_id(system, names[0]);
-    short stop_startId = get_stop_id(system, names[1]);
-    short stop_endId = get_stop_id(system, names[2]);
+    short i = 0, len = system->link_count;
     short ids[3];
-    ids[0] = lineId, ids[1] = stop_startId, ids[2] = stop_endId;
+    compact_ids(system, ids, names);
 
-    if (pos) {
-        configure_link(system, ids, cost_dur, len);
-    } else {
-        for (i = 0; i < len; i++) {
-            if (!strcmp(system->links[i].line->name,
-                        system->lines[lineId].name)) {
-                break;
+    if (strcmp(names[1], names[2])) {
+        if (pos) {
+            configure_link(system, ids, cost_dur, len);
+        } else {
+            while (i < len && strcmp(system->links[i].line->name,
+                                    system->lines[ids[0]].name)) {
+                i++;
             }
+            move_links(system, i);
+            configure_link(system, ids, cost_dur, i + 1);
         }
-        move_links(system, i);
-        configure_link(system, ids, cost_dur, i + 1);
+        if (!system->lines[ids[0]].n_stops) {
+            update_line(system, ids, true);
+        } else {
+            update_line(system, ids, false);
+        }
+        update_stop(system, ids[1]);
+        update_stop(system, ids[2]);
     }
-    if (!system->lines[ids[0]].n_stops) {
-        update_line(system, ids, true);
-    } else {
-        update_line(system, ids, false);
-    }
-    update_stop(system, ids[1]);
-    update_stop(system, ids[2]);
 }
 
 
@@ -105,6 +101,14 @@ short get_stop_id(Network *system, char *name) {
         }
     }
     return -1;
+}
+
+
+void compact_ids(Network *system, short *ids, char **names) {
+    short lineId = get_line_id(system, names[0]);
+    short stop_startId = get_stop_id(system, names[1]);
+    short stop_endId = get_stop_id(system, names[2]);
+    ids[0] = lineId, ids[1] = stop_startId, ids[2] = stop_endId;
 }
 
 

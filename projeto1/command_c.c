@@ -93,8 +93,6 @@ void create_line(Network *system, char name[], short *len) {
 
 void update_line(Network *system, short *ids, char init) {
     short i, count = 0, len = system->link_count;
-    char first[STOP_NAME_MAX_SIZE], last[STOP_NAME_MAX_SIZE];
-
     if (init) {
         system->lines[ids[0]].first = &system->stops[ids[1]];
         system->lines[ids[0]].last = &system->stops[ids[2]];
@@ -105,10 +103,8 @@ void update_line(Network *system, short *ids, char init) {
         if(!strcmp(system->links[i].line->name, system->lines[ids[0]].name)) {
             if (!count) {
                 system->lines[ids[0]].first = system->links[i].start;
-                strcpy(first, system->lines[ids[0]].first->name);
             } else {
                 system->lines[ids[0]].last = system->links[i].end;
-                strcpy(last, system->lines[ids[0]].last->name);
             }
             count++;
             system->lines[ids[0]].total_cost += system->links[i].cost;

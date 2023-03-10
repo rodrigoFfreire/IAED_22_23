@@ -14,7 +14,7 @@
 int main() {
     static Network system = {0};
     setup_system(&system);
-
+    
     while (command_handler(&system));
 
     return 0;
@@ -29,39 +29,18 @@ int main() {
 int command_handler(Network *system) {
     char option = getchar();
 
-    switch (option) {
-        case 'c':
-            command_add_list_lines(system);
-            return 1;
-            break;
-
-        case 'p':
-            command_add_list_stops(system);
-            return 1;
-            break;
-
-        case 'l':
-            command_add_links(system);
-            return 1;
-            break;
-
-        case 'i':
-            command_list_intersections(system);
-            return 1;
-            break;
-
-        case 'q':
-            return 0;
-            break;
-
-        case 'g':
-            printf("\x1b[2J\n\x1b[H");
-            return 1;
-            break;
-        default: /* Default Case: Unknown Commands */
-            return 1;
-            break;
+    if (option == 'c') {
+        command_add_list_lines(system);
+    } else if (option == 'p') {
+        command_add_list_stops(system);
+    } else if (option == 'l') {
+        command_add_links(system);
+    } else if (option == 'i') {
+        command_list_intersections(system);
+    } else if (option == 'q') {
+        return 0;
     }
+    return 1;
 }
 
 /*
@@ -201,7 +180,7 @@ int get_command_arguments(char *arg, int len) {
  * 0 -> argument not correct
 */
 int check_inv(char inv[]) {
-    int i, len = strlen(inv) + 1;	/* accounting string size with '\0' */
+    int i, len = get_len_str(inv);
     for (i = 0; inv[i] != '\0'; i++) {
         if (len > INVERSO_LENGTH || (len > 4 && len < INVERSO_LENGTH)) {
             return 0;
@@ -212,6 +191,12 @@ int check_inv(char inv[]) {
         }
     }
     return 1;
+}
+
+int get_len_str(char *str) {
+    int i = 0;
+    for (i = 0; str[i] != '\0'; i++);
+    return i + 1;
 }
 
 
