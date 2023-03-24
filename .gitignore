@@ -4,3 +4,4 @@
 *.sh
 !labupdate.sh
 test/
+Teoricas/

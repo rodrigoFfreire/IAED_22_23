@@ -41,96 +41,95 @@ int command_handler(Network *system) {
     } else if (option == 'i') {
         command_list_intersections(system);
     } else if (option == 'q') {
-        return 0;
+        return false;
     }
-    return 1;
+    return true;
 }
 
 /*
  * Function for adding and listing lines - 'c' command
- *
- *
+ * Token indeces:
+ * 0 -> line name; 1 -> inverso argument
 */
 void command_add_list_lines(Network *system) {
-    char name[LINE_NAME_MAX_SIZE];
-    char inverse[INVERSO_LENGTH];
-    int arg1 = 0, arg2 = 0, result;
+    int args, sizes[] = {LINE_NAME_MAX, INVERSO_LENGTH};
+    char tokens[CMD_C_ARGS][LINE_NAME_MAX] = {0};
+    char **tokens_ptr, *sub_ptrs[CMD_C_ARGS];
 
-    arg1 = get_command_arguments(name, LINE_NAME_MAX_SIZE);
+    sub_ptrs[0] = &tokens[0][0], sub_ptrs[1] = &tokens[1][0];
+    tokens_ptr = sub_ptrs;
 
-    if (!arg1) {
+    args = tokenize(tokens_ptr, sizes, CMD_C_ARGS);
+    if (!args)
         list_all_lines(system);
-        return;
-    } else if (arg1 == more_args) {
-        arg2 = get_command_arguments(inverse, INVERSO_LENGTH + 1);
-        result = create_line_list_stops(system, name, check_inv(inverse), arg2);
-    } else if (arg1 == one_arg) {
-        result = create_line_list_stops(system, name, false, false);
-    }
-    if (!result) {
+    else if (args == 1)
+        check_line_exists(system, tokens[0], false);
+    else if (args == 2 && check_inv(tokens[1]))
+        check_line_exists(system, tokens[0], true);
+    else
         printf(ERROR_SORT_OPTION);
-    }
 }
 
 /*
  * Function for adding and listing stops - 'p' command
- *
- *
+ * Token indeces:
+ * 0 -> stop name; 1 -> latitude; 2 -> longitude
 */
 void command_add_list_stops(Network *system) {
-    char name[STOP_NAME_MAX_SIZE];
-    double latitude, longitude;
-    int arg1, result;
+    int args, result, sizes[] = {STOP_NAME_MAX, DOUBLE_LEN, DOUBLE_LEN};
+    char tokens[CMD_P_ARGS][STOP_NAME_MAX] = {0};
+    char **tokens_ptr, *sub_ptrs[CMD_P_ARGS];
+    double lat = 0, lon = 0;
 
-    arg1 = get_command_arguments(name, STOP_NAME_MAX_SIZE);
+    sub_ptrs[0] = &tokens[0][0], sub_ptrs[1] = &tokens[1][0],
+    sub_ptrs[2] = &tokens[2][0], tokens_ptr = sub_ptrs;
 
-    if (!arg1) {
+    args = tokenize(tokens_ptr, sizes, CMD_P_ARGS);
+    if (!args) {
         list_all_stops(system);
-
-    } else if (arg1 == more_args) {
-        if(scanf("%lf %lf", &latitude, &longitude)){};
-        result = create_stop(system, name, latitude, longitude);
-        if (!result) {
-            printf("%s: %s", name, ERROR_STOP_EXISTS);
-        }
-    } else if (arg1 == one_arg) {
-        result = get_stop(system, name, true);
-        if (!result) {
-            printf("%s: %s", name, ERROR_NO_STOP);
-        }
+    }
+    else if (args == 1) {
+        result = get_stop(system, tokens[0], true);
+        if (!result)
+            printf("%s: %s", tokens[0], ERROR_NO_STOP);
+    }
+    else {
+        lat = atof(tokens[1]), lon = atof(tokens[2]);
+        result = create_stop(system, tokens[0], lat, lon);
+        if (!result)
+            printf("%s: %s", tokens[0], ERROR_STOP_EXISTS);
     }
 }
 
 /*
  * Function for adding and listing links between stops - 'l' command
- *
- *
+ * Token indeces:
+ * 0 -> line name; 1 -> start_stop; 2 -> end_stop; 3 -> cost; 4 -> duration
 */
 void command_add_links(Network *system) {
-    double cost_dur[2];
-    double cost, duration;
-    char names[3][STOP_NAME_MAX_SIZE], *ptr[3], **names_ptr;
-    int result;
-    ptr[0] = &names[0][0], ptr[1] = &names[1][0], ptr[2] = &names[2][0];
-    names_ptr = &(*ptr);
+    int args, result, sizes[] = {LINE_NAME_MAX, STOP_NAME_MAX, 
+                                    STOP_NAME_MAX, DOUBLE_LEN, DOUBLE_LEN};
+    char tokens[CMD_L_ARGS][STOP_NAME_MAX] = {0};
+    char **tokens_ptr, *sub_ptrs[CMD_L_ARGS];
 
-    get_command_arguments(names[0], LINE_NAME_MAX_SIZE);
-    get_command_arguments(names[1], STOP_NAME_MAX_SIZE);
-    get_command_arguments(names[2], STOP_NAME_MAX_SIZE);
-    if(scanf("%lf %lf", &cost, &duration)){};
-    cost_dur[0] = cost, cost_dur[1] = duration;
+    sub_ptrs[0] = &tokens[0][0], sub_ptrs[1] = &tokens[1][0],
+    sub_ptrs[2] = &tokens[2][0], sub_ptrs[3] = &tokens[3][0],
+    sub_ptrs[4] = &tokens[4][0], tokens_ptr = sub_ptrs;
 
-    result = create_link(system, names_ptr, cost_dur);
-    if (result == -1) {
-        printf("%s: %s", names[0], ERROR_NO_LINE);
-    } else if (result == -2) {
-        printf("%s: %s", names[1], ERROR_NO_STOP);
-    } else if (result == -3) {
-        printf("%s: %s", names[2], ERROR_NO_STOP);
-    } else if (result == -4) {
-        printf(ERROR_LINK);
-    } else if (result == -5) {
-        printf(ERROR_ILLEGAL_VALUE);
+    args = tokenize(tokens_ptr, sizes, CMD_L_ARGS);
+    if (args) {
+        result = create_link(system, tokens_ptr);
+        if (result == ERROR_CODE_NO_LINE) {
+            printf("%s: %s", tokens[0], ERROR_NO_LINE);
+        } else if (result == ERROR_CODE_NO_STOP_START) {
+            printf("%s: %s", tokens[1], ERROR_NO_STOP);
+        } else if (result == ERROR_CODE_NO_STOP_END) {
+            printf("%s: %s", tokens[2], ERROR_NO_STOP);
+        } else if (result == ERROR_CODE_LINK) {
+            printf(ERROR_LINK);
+        } else if (result == ERROR_CODE_ILLEGAL_VALUE) {
+            printf(ERROR_ILLEGAL_VALUE);
+        }
     }
 }
 
@@ -143,61 +142,76 @@ void command_list_intersections(Network *system) {
         if (system->stops[i].n_lines > 1) {
             printf("%s %d:",system->stops[i].name, system->stops[i].n_lines);
             print_intersections(system, system->stops[i].name);
+            printf("\n");
         }
     }
 }
 
 /*
- * Auxiliary Function to obtain optional command arguments
- * Return Values:
- * 0 -> No arguments found
- * 1 -> One argument found
- * 2 -> More than one argument found
+ * Auxiliary Function that gets command arguments and tokenizes
+ * these values into an array
+ * Return Value: Number of used tokens
 */
-int get_command_arguments(char *arg, int len) {
-    int i = 0, quotes = 0, flag = no_args;
+int tokenize(char **tokens, int *sizes, int len) {
+    int i = 0, quote = 0, j = 0;
     char c;
 
-    while ((c = getchar()) != EOF && c != '\n') {
-        if (c == '\"') {
-            quotes++;
-            continue;
-        }
-        if (c == ' ' && quotes % 2 == 0 && i != 0) {
-            flag = more_args;
-            break;
-        }
-        if ((i == 0 && c != ' ') || (i != 0 && i < len - 1)) {
-            flag = one_arg;
-            arg[i] = c;
-            i++;
+    while((c = getchar()) != '\n') {
+        if (i < len) {
+            if (c == '\"') {
+                quote++;
+                continue;
+            }
+            else if (isspace(c) && !(quote % 2) && j != 0) {
+                j = 0;
+                i++;
+            }
+            if ((j == 0 && (!isspace(c) || (quote % 2))) ||
+                    (j != 0 && j < sizes[i] - 1)) {
+                tokens[i][j++] = c;
+            }
         }
     }
-    arg[i] = '\0';
-    return flag;
+    return used_tokens_len(tokens, len);
 }
 
 /*
- * Auxiliary Function checks if `inverso` argument is correct
+ * Auxiliary Function returns the amount of tokens
+ * that were populated by the tokenize function
+*/
+int used_tokens_len(char **tokens, int len) {
+    int i, args = 0;
+    for (i = 0; i < len; i++) {
+        if (tokens[i][0] != '\0')
+            args++;
+    }
+    return args;
+}
+
+/*
+ * Checks if `inverso` argument is correct
  * Return Values:
  * 1 -> argument is correct
  * 0 -> argument not correct
 */
-int check_inv(char inv[]) {
+int check_inv(char *inv) {
     int i, len = strlen(inv) + 1;
     for (i = 0; inv[i] != '\0'; i++) {
-        if (len > INVERSO_LENGTH || (len > 4 && len < INVERSO_LENGTH)) {
-            return 0;
+        if (len <= INVERSO_ABV_LIMIT || len > INVERSO_LENGTH) {
+            return false;
         } else {
             if (inv[i] != INVERSO[i]) {
-                return 0;
+                return false;
             }
         }
     }
-    return 1;
+    return true;
 }
 
-
+/*
+ * Initializes the Stop, Line, Link Arrays with default objects
+ * (stop0, line0, link0) that equal to NULL
+*/
 void setup_system(Network *system, Stop *stop0, Line *line0, Link *link0) {
     int i;
     system->line_count = 0, system->link_count = 0, system->stop_count = 0;

@@ -1,22 +1,36 @@
 /*
- *   File: project1.h
+ *   File: main.h
  *   Author: Rodrigo Freire - 106485
  *   Description: Main header file
  */
-
-/* CONSTANTS */
 #ifndef MAIN_H
 #define MAIN_H
 
-
-#define LINE_NAME_MAX_SIZE 20
-#define STOP_NAME_MAX_SIZE 50
+/* CONSTANTS */
+/* Maximum name lengths*/
+#define LINE_NAME_MAX 21
+#define STOP_NAME_MAX 51
+/* Maximum array elements*/
 #define MAX_LINES 200
 #define MAX_STOPS 10000
 #define MAX_LINKS 30000
-#define INVERSO_LENGTH 8
-
-
+/* Number of arguments read by each command */
+#define CMD_C_ARGS 2
+#define CMD_P_ARGS 3
+#define CMD_L_ARGS 5
+/* Error codes */
+#define ERROR_CODE_NO_LINE -1
+#define ERROR_CODE_NO_STOP_START -2
+#define ERROR_CODE_NO_STOP_END -3
+#define ERROR_CODE_LINK -4
+#define ERROR_CODE_ILLEGAL_VALUE -5
+#define ERROR_CODE_INVALID_ID -6
+#define ERROR_CODE_OTHER -7
+/* Other constants */
+#define INVERSO_LENGTH 9     /* Maximum string length for INVERSO argument */
+#define DOUBLE_LEN 18    /* Maximum string length when converting to double */
+#define INVERSO_ABV_LIMIT 3    /* INVERSO argument abbreviation limit */
+/* String constants */
 #define INVERSO "inverso"
 #define ERROR_SORT_OPTION "incorrect sort option.\n"
 #define	ERROR_STOP_EXISTS "stop already exists.\n"
@@ -25,20 +39,20 @@
 #define ERROR_LINK "link cannot be associated with bus line.\n"
 #define ERROR_ILLEGAL_VALUE "negative cost or duration.\n"
 
+
 /* STRUCTS */
 typedef struct {
-    char name[STOP_NAME_MAX_SIZE];
+    char name[STOP_NAME_MAX];
     unsigned char n_lines;
     double latitude;
     double longitude;
 } Stop;
 
 typedef struct {
-    char name[LINE_NAME_MAX_SIZE];
+    char name[LINE_NAME_MAX];
     double total_cost;
     double total_duration;
     short n_stops;
-    char loop;
     Stop *first;
     Stop *last;
 } Line;
@@ -58,15 +72,15 @@ typedef struct {
     short line_count;
     short stop_count;
     short link_count;
-} Network;
+} Network;  /* Contains the Line, Stop, Link arrays (global system) */
 
-/* Enums */
-enum get_command_args_FLAGS{no_args, one_arg, more_args};
-enum array_control{create, expand, delete};
+
+/* ENUMS */
 enum bool{false, true};
 
-/* main functions */
 
+/* FUNCTIONS */
+/* main.c Functions */
 int command_handler(Network *system);
 
 void command_add_list_lines(Network *system);
@@ -77,39 +91,38 @@ void command_add_links(Network *system);
 
 void command_list_intersections(Network *system);
 
-int get_command_arguments(char arg[], int len);
+int tokenize(char **tokens, int *sizes, int len);
 
-int check_inv(char inv[]);
+int used_tokens_len(char **tokens, int len);
+
+int check_inv(char *inv);
 
 void setup_system(Network *system, Stop *stop, Line *line, Link *link);
 
+/* command_c.c Functions */
+void list_stops(Network *system, char *name, int invert);
 
-/* Command 'c' functions */
-void list_stops(Network *system, char name[], int invert, short len);
+void create_line(Network *system, char *name);
 
-void create_line(Network *system, char name[], short *len);
-
-int create_line_list_stops(Network *system, char name[], int invert, int arg2);
+void check_line_exists(Network *system, char *name, int invert);
 
 void list_all_lines(Network *system);
 
-void update_line(Network *system, short *ids, char init);
+void update_line(Network *system, short *ids, int init);
 
-
-/* Command 'p' functions */
+/* command_p.c Functions */
 void list_all_stops(Network *system);
 
-int get_stop(Network *system, char name[], char print);
+int get_stop(Network *system, char *name, char print);
 
-int create_stop(Network *system, char name[], double lat, double lon);
+int create_stop(Network *system, char *name, double lat, double lon);
 
 void update_stop(Network *system, short stop_id);
 
 int line_exists(unsigned char *line_ids, unsigned char n);
 
-
-/* Command 'l' functions */
-int create_link(Network *system, char **names, double *cost_dur);
+/* command_l.c Functions */
+int create_link(Network *system, char **tokens);
 
 int add_link(Network *system, char **names, double *cost_dur);
 
@@ -125,14 +138,11 @@ void move_links(Network *system, short pos);
 
 void compact_ids(Network *system, short *ids, char **names);
 
-
-/* Command 'i' functions */
+/* command_i.c functions */
 void print_intersections(Network *system, char *stop_name);
 
-int line_name_exists(char **lines, char *name, short *len);
+int line_name_exists(char lines[][LINE_NAME_MAX], char *name, short len);
 
-void array_control(char ***arr, short *len, int mode);
-
-void selection_sort(char **arr, short len);
+void selection_sort(char arr[][LINE_NAME_MAX], short len);
 
 #endif
