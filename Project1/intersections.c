@@ -1,7 +1,7 @@
 /*
- *   File: commands_i.c
+ *   File: intersections.c
  *   Author: Rodrigo Freire - 106485
- *   Description: Source code of the 'i' command functions
+ *   Description: Source code for intersection related functions
 */
 #include "main.h"
 #include <stdio.h>
@@ -49,21 +49,25 @@ int line_name_exists(char line_array[][LINE_NAME_MAX], char *name, short len) {
     return false;
 }
 
-
+/*
+ * Standard implementation of selection sort that compares strings
+ * Receives an array of line names and its length
+*/
 void selection_sort(char array[][LINE_NAME_MAX], short len) {
-    int i, j, j_min = 0;
-    char k[LINE_NAME_MAX];
+    int i, j, min = 0;
+    char aux[LINE_NAME_MAX];
+    
     for (i = 0; i < len - 1; i++) {
-        j_min = i;
+        min = i;
         for (j = i + 1; j < len; j++) {
-            if (strcmp(array[j], array[j_min]) < 0) {
-                j_min = j;
+            if (strcmp(array[j], array[min]) < 0) {
+                min = j;
             }
         }
-        if (j_min != i) {
-            strcpy(k, array[i]);
-            strcpy(array[i], array[j_min]);
-            strcpy(array[j_min], k);
+        if (min != i) {
+            strcpy(aux, array[i]);
+            strcpy(array[i], array[min]);
+            strcpy(array[min], aux);
         }
     }
 }

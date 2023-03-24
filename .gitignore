@@ -1,7 +1,6 @@
-*.DS_Store
-*.code-workspace
-*.vscode
-*.sh
-!labupdate.sh
+.DS_Store
+.code-workspace
+.vscode
+.sh
 test/
 Teoricas/

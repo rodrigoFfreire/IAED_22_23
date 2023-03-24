@@ -1,7 +1,7 @@
 /*
- *   File: commands_c.c
+ *   File: lines.c
  *   Author: Rodrigo Freire - 106485
- *   Description: Source code of the 'c' command functions
+ *   Description: Source code for line related functions
 */
 #include "main.h"
 #include <stdio.h>
@@ -34,8 +34,8 @@ void list_all_lines(Network *system) {
 
 /*
  * Receives a Network object, the name of the line, and an invert flag
- * and checks if this line already exists and carrys out the correct
- * command
+ * and checks if this line already exists and carries out the correct
+ * action
 */
 void check_line_exists(Network *system, char *name, int invert) {
     short i, line_len = system->line_count;
@@ -52,14 +52,14 @@ void check_line_exists(Network *system, char *name, int invert) {
 
 /* 
  * Receives a Network object, the name of the line and an invert flag
- * and lists in the according order (invert = 0 || 1) the stops
+ * and lists in the according order (invert = true || false) the stops
  * that belong to the line
 */
 void list_stops(Network *system, char *name, int invert) {
     short link_len = system->link_count;
     short j, last_stop = 0;
 
-    if (!invert && link_len > 0) {
+    if (!invert && link_len > 0) {  /* Print in normal order */
         for (j = 0; j < link_len; j++) {
             if (!strcmp(name, system->links[j].line->name)) {
                 last_stop = j;
@@ -69,7 +69,7 @@ void list_stops(Network *system, char *name, int invert) {
         if (!strcmp(name, system->links[last_stop].line->name)) {
             printf("%s\n", system->links[last_stop].end->name);
         }
-    } else if (link_len > 0) {
+    } else if (link_len > 0) {  /* Print in reversed order */
         for (j = link_len - 1; j >= 0; j--) {
             if (!strcmp(name, system->links[j].line->name)) {
                 last_stop = j;
@@ -86,7 +86,7 @@ void list_stops(Network *system, char *name, int invert) {
 void create_line(Network *system, char *name) {
     short *len = &(system->line_count);
 
-    if (*len < MAX_LINES) {
+    if (*len < MAX_LINES) { /* Overflow protection */
         *len += 1;
         strcpy(system->lines[*len - 1].name, name);
         system->lines[*len - 1].n_stops = 0;
@@ -98,14 +98,14 @@ void create_line(Network *system, char *name) {
 /*
  * Receives a Network object, an array of ids[3] and a init flag
  * that specifies if a line is being updated for the first time
- * and updates the line with a new link made by 2 stops
+ * and updates that line with a new link made by 2 stops
  * ids indeces:
- * 0 -> position of a line in the system->lines[]
- * 1, 2 -> positions of stops in the system->stops[]
+ * 0 -> index of a line in the system->lines[]
+ * 1, 2 -> indeces of stops (start, stop) in the system->stops[]
 */
 void update_line(Network *system, short *ids, int init) {
     short i, count = 0, len = system->link_count;
-    if (init) {
+    if (init) { /* Initialize line for the first time */
         system->lines[ids[0]].first = &system->stops[ids[1]];
         system->lines[ids[0]].last = &system->stops[ids[2]];
     }
@@ -123,5 +123,5 @@ void update_line(Network *system, short *ids, int init) {
             system->lines[ids[0]].total_duration += system->links[i].duration;
         }
     }
-    system->lines[ids[0]].n_stops = count + 1;	/* Each link has 2 stops */
+    system->lines[ids[0]].n_stops = ++count;  /* Each link has 2 stops */
 }

@@ -6,6 +6,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+
 /* CONSTANTS */
 /* Maximum name lengths*/
 #define LINE_NAME_MAX 21
@@ -95,11 +96,11 @@ int tokenize(char **tokens, int *sizes, int len);
 
 int used_tokens_len(char **tokens, int len);
 
-int check_inv(char *inv);
+int check_inverso(char *inv);
 
-void setup_system(Network *system, Stop *stop, Line *line, Link *link);
+void setup_system(Network *system, Stop *stop0, Line *line0, Link *link0);
 
-/* command_c.c Functions */
+/* lines.c Functions */
 void list_stops(Network *system, char *name, int invert);
 
 void create_line(Network *system, char *name);
@@ -110,7 +111,7 @@ void list_all_lines(Network *system);
 
 void update_line(Network *system, short *ids, int init);
 
-/* command_p.c Functions */
+/* stops.c Functions */
 void list_all_stops(Network *system);
 
 int get_stop(Network *system, char *name, char print);
@@ -119,10 +120,10 @@ int create_stop(Network *system, char *name, double lat, double lon);
 
 void update_stop(Network *system, short stop_id);
 
-int line_exists(unsigned char *line_ids, unsigned char n);
+int line_exists_in(unsigned char *line_ids, unsigned char n);
 
-/* command_l.c Functions */
-int create_link(Network *system, char **tokens);
+/* links.c Functions */
+int check_link_args(Network *system, char **tokens);
 
 int add_link(Network *system, char **names, double *cost_dur);
 
@@ -138,7 +139,7 @@ void move_links(Network *system, short pos);
 
 void compact_ids(Network *system, short *ids, char **names);
 
-/* command_i.c functions */
+/* intersections.c functions */
 void print_intersections(Network *system, char *stop_name);
 
 int line_name_exists(char lines[][LINE_NAME_MAX], char *name, short len);

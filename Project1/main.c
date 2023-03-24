@@ -1,10 +1,9 @@
 /*
- *   File: project1.c
+ *   File: main.c
  *   Author: Rodrigo Freire - 106485
  *   Description: Main file
 */
 #include "main.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +21,7 @@ int main() {
 
     return 0;
 }
+
 
 /*
  * Handles user input
@@ -60,14 +60,15 @@ void command_add_list_lines(Network *system) {
     tokens_ptr = sub_ptrs;
 
     args = tokenize(tokens_ptr, sizes, CMD_C_ARGS);
-    if (!args)
+    if (!args) {
         list_all_lines(system);
-    else if (args == 1)
+    } else if (args == 1) {
         check_line_exists(system, tokens[0], false);
-    else if (args == 2 && check_inv(tokens[1]))
+    } else if (args == 2 && check_inverso(tokens[1])) {
         check_line_exists(system, tokens[0], true);
-    else
+    } else {
         printf(ERROR_SORT_OPTION);
+    }
 }
 
 /*
@@ -87,17 +88,17 @@ void command_add_list_stops(Network *system) {
     args = tokenize(tokens_ptr, sizes, CMD_P_ARGS);
     if (!args) {
         list_all_stops(system);
-    }
-    else if (args == 1) {
+    } else if (args == 1) {
         result = get_stop(system, tokens[0], true);
-        if (!result)
+        if (!result) {
             printf("%s: %s", tokens[0], ERROR_NO_STOP);
-    }
-    else {
-        lat = atof(tokens[1]), lon = atof(tokens[2]);
+        }
+    } else {
+        lat = atof(tokens[1]), lon = atof(tokens[2]);   /* string to double */
         result = create_stop(system, tokens[0], lat, lon);
-        if (!result)
+        if (!result) {
             printf("%s: %s", tokens[0], ERROR_STOP_EXISTS);
+        }
     }
 }
 
@@ -118,7 +119,7 @@ void command_add_links(Network *system) {
 
     args = tokenize(tokens_ptr, sizes, CMD_L_ARGS);
     if (args) {
-        result = create_link(system, tokens_ptr);
+        result = check_link_args(system, tokens_ptr);
         if (result == ERROR_CODE_NO_LINE) {
             printf("%s: %s", tokens[0], ERROR_NO_LINE);
         } else if (result == ERROR_CODE_NO_STOP_START) {
@@ -133,9 +134,7 @@ void command_add_links(Network *system) {
     }
 }
 
-/*
- * Function for listing line intersections - 'i' command
-*/
+/* Function for listing line intersections - 'i' command */
 void command_list_intersections(Network *system) {
     short i, len = system->stop_count;
     for (i = 0; i < len; i++) {
@@ -153,12 +152,14 @@ void command_list_intersections(Network *system) {
  * Return Value: Number of used tokens
 */
 int tokenize(char **tokens, int *sizes, int len) {
+    /* quote keeps track if an argument is in quotes */
     int i = 0, quote = 0, j = 0;
     char c;
 
     while((c = getchar()) != '\n') {
         if (i < len) {
             if (c == '\"') {
+                /* Enter ou exit quote mode */
                 quote++;
                 continue;
             }
@@ -194,7 +195,7 @@ int used_tokens_len(char **tokens, int len) {
  * 1 -> argument is correct
  * 0 -> argument not correct
 */
-int check_inv(char *inv) {
+int check_inverso(char *inv) {
     int i, len = strlen(inv) + 1;
     for (i = 0; inv[i] != '\0'; i++) {
         if (len <= INVERSO_ABV_LIMIT || len > INVERSO_LENGTH) {
@@ -228,3 +229,4 @@ void setup_system(Network *system, Stop *stop0, Line *line0, Link *link0) {
         system->links[i] = *link0;
     }
 }
+

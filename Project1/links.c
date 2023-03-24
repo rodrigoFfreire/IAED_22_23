@@ -1,7 +1,7 @@
 /*
- *   File: commands_l.c
+ *   File: links.c
  *   Author: Rodrigo Freire - 106485
- *   Description: Source code of the 'l' command functions
+ *   Description: Source code for link related functions
 */
 #include "main.h"
 #include <stdio.h>
@@ -13,9 +13,9 @@
  * Receives a Network object and an array of tokens that contain
  * in this order (line name, start_stop name, end_stop name) and checks if
  * the information received is correct to create a new link
- * Returns 1 if operation was successfull or return an error code
+ * Returns 1 if operation was successful or returns an error code
 */
-int create_link(Network *system, char **tokens) {
+int check_link_args(Network *system, char **tokens) {
     short result, *len = &system->link_count;
     short lineId = get_line_id(system, tokens[0]);
     short stop_startId = get_stop_id(system, tokens[1]);
@@ -37,7 +37,7 @@ int create_link(Network *system, char **tokens) {
         if (result == ERROR_CODE_OTHER)
             return ERROR_CODE_LINK;
         }
-    return 1;
+    return true;
 }
 
 /* 
@@ -60,6 +60,7 @@ int add_link(Network *system, char **names, double *cost_dur) {
             return true;
         }
     }
+    /* last case add link at the end (pos = true) */
     add_link_aux(system, names, cost_dur, true);
     return true;
 }
@@ -73,21 +74,20 @@ int add_link(Network *system, char **names, double *cost_dur) {
 void add_link_aux(Network *system, char **names, double *cost_dur, char pos) {
     short i = 0, *len = &(system->link_count);
     short ids[3];
-    compact_ids(system, ids, names);
+    compact_ids(system, ids, names);  /* names to array indeces conversion */
 
     if (strcmp(names[1], names[2])) {
         *len += 1;
         if (pos) {
             configure_link(system, ids, cost_dur, *len);
         } else {
-            while (i < *len && strcmp(system->links[i].line->name,
-                                    system->lines[ids[0]].name)) {
-                i++;
-            }
+            /* Loop until it finds the correct index */
+            for (i = 0; i < *len && strcmp(system->links[i].line->name,
+                                    system->lines[ids[0]].name); i++);
             move_links(system, i);
             configure_link(system, ids, cost_dur, i + 1);
         }
-        if (!system->lines[ids[0]].n_stops) {
+        if (!system->lines[ids[0]].n_stops) { 
             update_line(system, ids, true);
         } else {
             update_line(system, ids, false);
