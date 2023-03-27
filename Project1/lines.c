@@ -86,7 +86,7 @@ void list_stops(Network *system, char *name, int invert) {
 void create_line(Network *system, char *name) {
     short *len = &(system->line_count);
 
-    if (*len < MAX_LINES) { /* Overflow protection */
+    if (*len < MAX_LINES) {
         *len += 1;
         strcpy(system->lines[*len - 1].name, name);
         system->lines[*len - 1].n_stops = 0;
@@ -123,5 +123,5 @@ void update_line(Network *system, short *ids, int init) {
             system->lines[ids[0]].total_duration += system->links[i].duration;
         }
     }
-    system->lines[ids[0]].n_stops = ++count;  /* Each link has 2 stops */
+    system->lines[ids[0]].n_stops = count + 1;  /* Each link has 2 stops */
 }

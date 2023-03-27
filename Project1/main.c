@@ -5,8 +5,8 @@
 */
 #include "main.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 /* Main Loop */
@@ -14,6 +14,7 @@ int main() {
     Stop stop0 = {0};
     Line line0 = {0};
     Link link0 = {0};
+
     Network system = {0};
     setup_system(&system, &stop0, &line0, &link0);
     
@@ -147,8 +148,7 @@ void command_list_intersections(Network *system) {
 }
 
 /*
- * Auxiliary Function that gets command arguments and tokenizes
- * these values into an array
+ * Populates the tokens array with the received command arguments
  * Return Value: Number of used tokens
 */
 int tokenize(char **tokens, int *sizes, int len) {

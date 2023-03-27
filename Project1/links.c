@@ -21,7 +21,7 @@ int check_link_args(Network *system, char **tokens) {
     short stop_startId = get_stop_id(system, tokens[1]);
     short stop_endId = get_stop_id(system, tokens[2]);
     double cost_dur[2];
-
+    /* Get cost and duration */
     cost_dur[0] = atof(tokens[3]), cost_dur[1] = atof(tokens[4]);
     if (*len < MAX_LINKS) {
         if (lineId == ERROR_CODE_INVALID_ID) {
@@ -76,25 +76,23 @@ void add_link_aux(Network *system, char **names, double *cost_dur, char pos) {
     short ids[3];
     compact_ids(system, ids, names);  /* names to array indeces conversion */
 
-    if (strcmp(names[1], names[2])) {
-        *len += 1;
-        if (pos) {
-            configure_link(system, ids, cost_dur, *len);
-        } else {
-            /* Loop until it finds the correct index */
-            for (i = 0; i < *len && strcmp(system->links[i].line->name,
-                                    system->lines[ids[0]].name); i++);
-            move_links(system, i);
-            configure_link(system, ids, cost_dur, i + 1);
-        }
-        if (!system->lines[ids[0]].n_stops) { 
-            update_line(system, ids, true);
-        } else {
-            update_line(system, ids, false);
-        }
-        update_stop(system, ids[1]);
-        update_stop(system, ids[2]);
+    *len += 1;
+    if (pos) {
+        configure_link(system, ids, cost_dur, *len);
+    } else {
+        /* Loop until it finds the correct index */
+        for (i = 0; i < *len && strcmp(system->links[i].line->name,
+                                system->lines[ids[0]].name); i++);
+        move_links(system, i);
+        configure_link(system, ids, cost_dur, i + 1);
     }
+    if (!system->lines[ids[0]].n_stops) { 
+        update_line(system, ids, true);
+    } else {
+        update_line(system, ids, false);
+    }
+    update_stop(system, ids[1]);
+    update_stop(system, ids[2]);
 }
 
 /* 

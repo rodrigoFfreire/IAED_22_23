@@ -6,7 +6,6 @@
 #include "main.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 
 /* 
@@ -28,8 +27,8 @@ void list_all_stops(Network *system) {
 
 /*
  * Receives a Network object, a stop name and a print flag
- * If found displays the stops coordinates
- * This function also determines if a stop with a certain name exists
+ * If found, displays the stops coordinates
+ * This function also determines if a stop with a certain name exists.
  * print flag is used to silence output when checking if stop exists
  * Return Values:
  * 0 -> stop doesnt exist
@@ -105,6 +104,7 @@ void update_stop(Network *system, short stop_id) {
         if (!strcmp(system->links[i].start->name, stop_id_name) ||
                 !strcmp(system->links[i].end->name, stop_id_name)) {
             curr_line_id = get_line_id(system, system->links[i].line->name);
+            /* Filter duplicate values */
             if (!line_exists_in(line_ids, curr_line_id)) {
                 line_ids[0] += 1;
                 line_ids[line_ids[0]] = curr_line_id;
