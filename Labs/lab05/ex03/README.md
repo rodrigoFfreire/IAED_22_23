@@ -15,3 +15,18 @@ Oracle 10 2
 ```
 Oracle 10.00 2.00
 ```
+
+
+# Evaluation
+
+2023-03-10T10:18:04
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+
+
+## Number of passed tests: 2/2
+
+
+Your code will not be reevaluated if you submit before 2023-03-10 10:19:04 @ Lisbon, Portugal. You need to wait 1 minute(s).
+

@@ -16,3 +16,23 @@ No output deve mostrar apenas um valor inteiro que corresponde ao número de min
 ```
 1550
 ```
+
+
+# Evaluation
+
+2023-03-10T23:53:34
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+## Test 4: [+ Accepted+].
+## Test 5: [+ Accepted+].
+## Test 6: [+ Accepted+].
+## Test 7: [+ Accepted+].
+
+
+## Number of passed tests: 7/7
+
+
+Your code will not be reevaluated if you submit before 2023-03-10 23:54:34 @ Lisbon, Portugal. You need to wait 1 minute(s).
+

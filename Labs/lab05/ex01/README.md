@@ -22,3 +22,20 @@ Caso existam duas disciplinas/alunos com o mesmo score, deverá ser impresso o q
 4
 1
 ```
+
+
+# Evaluation
+
+2023-03-10T09:14:50
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+## Test 4: [+ Accepted+].
+
+
+## Number of passed tests: 4/4
+
+
+Your code will not be reevaluated if you submit before 2023-03-10 09:15:50 @ Lisbon, Portugal. You need to wait 1 minute(s).
+

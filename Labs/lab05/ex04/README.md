@@ -24,3 +24,27 @@ O programa deve imprimir o carácter 'x' se ganhou o jogador 'x', o carácter 'o
 ```
 x
 ```
+
+
+# Evaluation
+
+2023-03-10T11:26:34
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+## Test 4: [+ Accepted+].
+## Test 5: [+ Accepted+].
+## Test 6: [+ Accepted+].
+## Test 7: [+ Accepted+].
+## Test 8: [+ Accepted+].
+## Test 9: [+ Accepted+].
+## Test 10: [+ Accepted+].
+## Test 11: [+ Accepted+].
+
+
+## Number of passed tests: 11/11
+
+
+Your code will not be reevaluated if you submit before 2023-03-10 11:27:34 @ Lisbon, Portugal. You need to wait 1 minute(s).
+

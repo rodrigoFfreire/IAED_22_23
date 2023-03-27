@@ -14,3 +14,24 @@ No outut deve apenas mostrar ambas as datas de forma ordenada, ou seja, primeiro
 ```
 01-01-2022 01-02-2022
 ```
+
+
+# Evaluation
+
+2023-03-11T00:00:30
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+## Test 4: [+ Accepted+].
+## Test 5: [+ Accepted+].
+## Test 6: [+ Accepted+].
+## Test 7: [+ Accepted+].
+## Test 8: [+ Accepted+].
+
+
+## Number of passed tests: 8/8
+
+
+Your code will not be reevaluated if you submit before 2023-03-11 00:01:30 @ Lisbon, Portugal. You need to wait 1 minute(s).
+

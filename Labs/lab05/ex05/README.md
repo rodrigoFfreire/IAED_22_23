@@ -14,3 +14,24 @@ No outut deve apenas mostrar a soma das horas no formato HH:MM.
 ```
 06:20
 ```
+
+
+# Evaluation
+
+2023-03-10T11:43:55
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+## Test 4: [+ Accepted+].
+## Test 5: [+ Accepted+].
+## Test 6: [+ Accepted+].
+## Test 7: [+ Accepted+].
+## Test 8: [+ Accepted+].
+
+
+## Number of passed tests: 8/8
+
+
+Your code will not be reevaluated if you submit before 2023-03-10 11:44:55 @ Lisbon, Portugal. You need to wait 1 minute(s).
+

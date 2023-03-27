@@ -14,3 +14,19 @@ Os números do tipo float devem ser impressos usando `%.2f`.
 ```
 3.00+7.00i
 ```
+
+
+# Evaluation
+
+2023-03-10T09:41:24
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+
+
+## Number of passed tests: 3/3
+
+
+Your code will not be reevaluated if you submit before 2023-03-10 09:42:24 @ Lisbon, Portugal. You need to wait 1 minute(s).
+
