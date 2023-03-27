@@ -1,4 +1,3 @@
-/* iaed-23 - ist1106485 - lab03/ex01 */
 #include <stdio.h>
 
 void quadrado(int N)

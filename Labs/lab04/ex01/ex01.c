@@ -1,4 +1,3 @@
-/* iaed-23 - ist1106485 - lab04/ex01 */
 #include <stdio.h>
 
 #define VECMAX 100

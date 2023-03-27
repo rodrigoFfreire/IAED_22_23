@@ -1,4 +1,3 @@
-/* iaed-23 - ist1106485 - lab02/ex02 */
 
 #include <stdio.h>
 

@@ -1,4 +1,3 @@
-/* iaed-23 - ist1106485 - lab04/ex04 */
 #include <stdio.h>
 
 #define MAX 80
