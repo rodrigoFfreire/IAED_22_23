@@ -13,7 +13,7 @@ Os alunos devem submeter aqui a sua solução para o project1 que será avaliada
 O resultado da avaliação do projecto ficará disponível neste ficheiro README. Estas informações detalhadas ficarão disponíveis em [informacoes.md](informacoes.md).
 
 
-O desempenho global dos alunos no project1 pode ser consultado no [_dashboard_](https://gitlab.rnl.tecnico.ulisboa.pt/iaed-23/iaed-23/-/tree/master/dashboard/projects/project1.md) do projecto, presente no repositório global de iaed-23.
+O desempenho global dos alunos no project1 pode ser consultado no _dashboard_ do projecto, presente no repositório global de iaed-23.
 
 
 - **Notas importantes:**
