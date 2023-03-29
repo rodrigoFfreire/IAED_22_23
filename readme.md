@@ -22,4 +22,5 @@ Example with gcc:
 
 cd Labs/lab05
 gcc ex05.c -o ex05
+./ex05
 ```
