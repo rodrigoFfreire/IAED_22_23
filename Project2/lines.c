@@ -124,27 +124,28 @@ void create_line(Network *system, char *name) {
  * 0 -> index of a line in the system->lines[]
  * 1, 2 -> indeces of stops (start, stop) in the system->stops[]
 */
-void update_line(Network *system, int *ids, int init) {
+void update_line(Network *system, int *ids) {
     int i, count = 0, len = system->link_count;
-    if (init) { /* Initialize line for the first time */
-        system->lines[ids[0]].id_first = ids[1];
-        system->lines[ids[0]].id_last = ids[2];
-    }
+
     system->lines[ids[0]].total_cost = 0;
     system->lines[ids[0]].total_duration = 0;
     for (i = 0; i < len; i++) {
         if(system->links[i].id_line == ids[0]) {
-            if (!count) {
+            if (!count)
                 system->lines[ids[0]].id_first = system->links[i].id_start;
-            } else {
-                system->lines[ids[0]].id_last = system->links[i].id_finish;
-            }
+            system->lines[ids[0]].id_last = system->links[i].id_finish;
+
             count++;
             system->lines[ids[0]].total_cost += system->links[i].cost;
             system->lines[ids[0]].total_duration += system->links[i].duration;
         }
     }
-    system->lines[ids[0]].n_stops = count + 1;  /* Each link has 2 stops */
+    if (count > 0) {
+        system->lines[ids[0]].n_stops = count + 1;
+    } else {
+        system->lines[ids[0]].n_stops = 0;
+        system->lines[ids[0]].id_first = system->lines[ids[0]].id_last = -1;
+    }
 }
 
 int delete_line(Network *system, char *name) {
@@ -169,19 +170,19 @@ int delete_line(Network *system, char *name) {
     }
     for (i = 0; i < stops_len; i++)
         system->stops[i].n_lines--;
-    update_arrays(system, line_id, links_count, new_links);
+    update_arrays_line(system, line_id, links_count, new_links);
     free(updated_stops);
-    return SUCCESS;
+    return true;
 }
 
-void update_arrays(Network *system, int line_id, int new_count, Link *new) {
+void update_arrays_line(Network *system, int id, int new_count, Link *new) {
     int* len = &(system->line_count);
 
-    free(system->lines[line_id].name);
+    free(system->lines[id].name);
     memmove(
-        &(system->lines[line_id]),
-        &(system->lines[line_id + 1]),
-        ((*len)-line_id)*sizeof(Line)
+        &(system->lines[id]),
+        &(system->lines[id + 1]),
+        ((*len)-id)*sizeof(Line)
     );
     system->lines = (Line*) safe_realloc(system->lines, (*len)*sizeof(Line));
     (*len)--;

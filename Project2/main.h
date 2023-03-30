@@ -14,8 +14,7 @@
 #define CMD_L_ARGS 5
 #define CMD_R_ARGS 1
 #define CMD_E_ARGS 1
-/* codes */
-#define SUCCESS 0
+/* Error Codes */
 #define ERROR_CODE_NO_LINE -1
 #define ERROR_CODE_NO_STOP -2
 #define ERROR_CODE_NO_STOP_START -3
@@ -88,6 +87,8 @@ void command_list_intersections(Network *system);
 
 void command_delete_line(Network *system);
 
+void command_delete_stop(Network *system);
+
 int tokenize(char **tokens, int len);
 
 int used_tokens_len(char **tokens, int len);
@@ -105,11 +106,11 @@ int get_line_id(Network *system, char *name);
 
 void list_all_lines(Network *system);
 
-void update_line(Network *system, int *ids, int init);
+void update_line(Network *system, int *ids);
 
 int delete_line(Network *system, char *name);
 
-void update_arrays(Network *system, int line_id, int new_count, Link *new);
+void update_arrays_line(Network *system, int id, int new_count, Link *new);
 
 /* stops.c Functions */
 void list_all_stops(Network *system);
@@ -121,6 +122,12 @@ int get_stop_id(Network *system, char *name);
 int create_stop(Network *system, char *name, double lat, double lon);
 
 void update_stop(Network *system, int stop_id);
+
+int delete_stop(Network *system, char *name);
+
+void update_arrays_stop(Network *system, int id, int new_count, Link *new);
+
+int* update_stop_last(Network *system, int *array, int* len, int id, int i);
 
 /* links.c Functions */
 int check_link_args(Network *system, char **tokens);

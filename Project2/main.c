@@ -41,7 +41,7 @@ int command_handler(Network *system) {
     } else if (option == 'r') {
         command_delete_line(system);
     } else if (option == 'e') {
-        /*command_add_links(system);*/
+        command_delete_stop(system);
     } else if (option == 'a') {
         free_system(system);
         setup_system(system);
@@ -159,6 +159,20 @@ void command_delete_line(Network *system) {
             printf("%s: %s", tokens[0], ERROR_NO_LINE);
     }
     free_str_arr(tokens, CMD_R_ARGS);
+}
+
+void command_delete_stop(Network *system) {
+    int args, result;
+    char **tokens = safe_calloc(CMD_E_ARGS, sizeof(char*));
+    tokens[0] = safe_calloc(1, sizeof(char));
+
+    args = tokenize(tokens, CMD_E_ARGS);
+    if (args) {
+        result = delete_stop(system, tokens[0]);
+        if (result == ERROR_CODE_NO_STOP)
+            printf("%s: %s", tokens[0], ERROR_NO_STOP);
+    }
+    free_str_arr(tokens, CMD_E_ARGS);
 }
 
 /*

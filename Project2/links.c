@@ -85,9 +85,9 @@ void add_link_aux(Network *system, int *ids, double *cost_dur, char pos) {
         configure_link(system, ids, cost_dur, i + 1);
     }
     if (!system->lines[ids[0]].n_stops) {
-        update_line(system, ids, true);
+        update_line(system, ids);
     } else {
-        update_line(system, ids, false);
+        update_line(system, ids);
     }
     update_stop(system, ids[1]);
     update_stop(system, ids[2]);
