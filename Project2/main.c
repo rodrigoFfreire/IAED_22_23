@@ -181,11 +181,11 @@ void command_delete_stop(Network *system) {
 */
 int tokenize(char **tokens, int len) {
     /* quote keeps track if an argument is in quotes */
-    int i = 0, quote = 0, j = 0, buff = 0;
+    int i = 0, quote = 0, j = 0;
     char c;
 
     while((c = getchar()) != '\n') {
-        if (i < len && ++buff < BUFSIZ) {
+        if (i < len) {
             if (c == '\"') {
                 /* Enter ou exit quote mode */
                 quote++;

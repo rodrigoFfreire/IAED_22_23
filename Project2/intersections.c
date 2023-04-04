@@ -15,14 +15,14 @@
 */
 void print_intersections(Network *system, int stop_id) {
     int i, array_len = 0, link_len = system->link_count;
-    int curr_line_id;
+    int curr_line;
     int* line_ids = (int*) safe_calloc(1, sizeof(int));
 
     for (i = 0; i < link_len; i++) {
         if (system->links[i].id_start == stop_id ||
                 system->links[i].id_finish == stop_id) {
-            curr_line_id = system->links[i].id_line;
-            line_ids = add_to_filtered_array(line_ids, curr_line_id, &array_len);
+            curr_line = system->links[i].id_line;
+            line_ids = add_to_filtered_array(line_ids, curr_line, &array_len);
         }
     }
     selection_sort(system, line_ids, array_len);

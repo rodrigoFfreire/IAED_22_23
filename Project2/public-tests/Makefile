@@ -9,7 +9,7 @@ LOG=tests.log
 
 all:: clean # run regression tests
 	@rm -f $(LOG)
-	@for i in `ls test*.in | sed -e "s/in/diff/"`; do $(MAKE) $(MFLAGS) $$i; done
+	@for i in `ls t*.in | sed -e "s/in/diff/"`; do $(MAKE) $(MFLAGS) $$i; done
 	@echo "`wc -l < $(LOG)` tests passed"
 
 .in.diff:

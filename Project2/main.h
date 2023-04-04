@@ -24,7 +24,6 @@
 #define ERROR_CODE_INVALID_ID -7
 #define ERROR_CODE_OTHER -8
 /* Other constants */
-#define BUFSZ 65535
 #define INVERSO_LENGTH 9     /* Maximum string length for INVERSO argument */
 #define INVERSO_ABV_LIMIT 3    /* INVERSO argument abbreviation limit */
 /* String constants */
@@ -124,6 +123,12 @@ int create_stop(Network *system, char *name, double lat, double lon);
 void update_stop(Network *system, int stop_id);
 
 int delete_stop(Network *system, char *name);
+
+void build_new_links(Network *system, int stop_id, int** updated_stops, 
+                        int* stops_len, int** updated_lines, int* lines_len);
+
+void skip_over_link(Network *system, int *i, int *link_i, int link_i_n,
+                        Link** new_links, int *new_link_count, int stop_id);
 
 void update_arrays_stop(Network *system, int id, int new_count, Link *new);
 

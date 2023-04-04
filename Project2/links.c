@@ -77,12 +77,14 @@ void add_link_aux(Network *system, int *ids, double *cost_dur, char pos) {
 
     (*len)++;
     if (pos) {
-        configure_link(system, ids, cost_dur, *len);
+        for (i = 0; i < *len - 1 && system->links[i].id_line <= ids[0]; i++);
+        move_links(system, i);
+        configure_link(system, ids, cost_dur, i);
     } else {
         /* Loop until it finds the correct index */
-        for (i = 0; i < *len && system->links[i].id_line != ids[0]; i++);
+        for (i = 0; i < *len - 1 && system->links[i].id_line != ids[0]; i++);
         move_links(system, i);
-        configure_link(system, ids, cost_dur, i + 1);
+        configure_link(system, ids, cost_dur, i);
     }
     if (!system->lines[ids[0]].n_stops) {
         update_line(system, ids);
@@ -101,11 +103,11 @@ void add_link_aux(Network *system, int *ids, double *cost_dur, char pos) {
 void configure_link(Network *system, int *ids, double *cost_dur, int pos) {
     int *len = &(system->link_count);
 
-    system->links[pos - 1].id_line = ids[0];
-    system->links[pos - 1].id_start = ids[1];
-    system->links[pos - 1].id_finish = ids[2];
-    system->links[pos - 1].cost = cost_dur[0];
-    system->links[pos - 1].duration = cost_dur[1];
+    system->links[pos].id_line = ids[0];
+    system->links[pos].id_start = ids[1];
+    system->links[pos].id_finish = ids[2];
+    system->links[pos].cost = cost_dur[0];
+    system->links[pos].duration = cost_dur[1];
 
     system->links = safe_realloc(system->links, (*len + 1)*sizeof(Link));
 }

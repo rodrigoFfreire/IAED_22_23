@@ -110,35 +110,18 @@ void update_stop(Network *system, int stop_id) {
 }
 
 int delete_stop(Network *system, char *name) {
-    int i, j, stop_id = get_stop_id(system, name);
-    int link_len = system->link_count, ids[3] = {0}, links_count = 0;
+    int i, stop_id = get_stop_id(system, name);
+    int ids[3] = {0};
     int* updated_lines = (int*) safe_calloc(1, sizeof(int)), lines_len = 0;
     int* updated_stops = (int*) safe_calloc(1, sizeof(int)), stops_len = 0;
-    Link* new_links = (Link*) safe_calloc(1, sizeof(Link));
 
-    if (stop_id == ERROR_CODE_INVALID_ID) return ERROR_CODE_NO_STOP;
-    for (i = 0; i < link_len; i++) {
-        if (system->links[i].id_start != stop_id &&
-                system->links[i].id_finish != stop_id) {
-            new_links[links_count++] = system->links[i];
-            new_links = safe_realloc(new_links, (links_count+1)*sizeof(Link));
-        } else {
-            if (system->lines[system->links[i].id_line].n_stops <= 2)
-                updated_stops = update_stop_last(system, updated_stops,
-                    &stops_len, stop_id, i);
-            if (system->links[i].id_finish == stop_id &&
-                (stop_id != system->lines[system->links[i].id_line].id_first) &&
-                (stop_id != system->lines[system->links[i].id_line].id_last)) {
-                for (j = i + 1; j < link_len && system->links[j].id_start != stop_id && system->links[j].id_line != system->links[i].id_line; j++);
-                system->links[i].id_finish = system->links[j].id_finish;
-                new_links[links_count++] = system->links[i];
-                new_links = safe_realloc(new_links, (links_count+1)*sizeof(Link));
-            }
-            updated_lines = add_to_filtered_array(updated_lines,
-                system->links[i].id_line, &lines_len);
-        }
+    if (stop_id == ERROR_CODE_INVALID_ID) {
+        free(updated_lines), free(updated_stops);
+        return ERROR_CODE_NO_STOP;
     }
-    update_arrays_stop(system, stop_id, links_count, new_links);
+    build_new_links(system, stop_id, &updated_stops, &stops_len, &updated_lines,
+        &lines_len);
+
     for (i = 0; i < lines_len; i++) {
         ids[0] = updated_lines[i];
         update_line(system, ids);
@@ -148,6 +131,38 @@ int delete_stop(Network *system, char *name) {
     free(updated_lines), free(updated_stops);
     return true;
 }
+
+void build_new_links(Network *system, int stop_id, int** updated_stops, 
+                        int* stops_len, int** updated_lines, int* lines_len) {
+    int i, link_len = system->link_count;
+    int new_links_count = 0, link_i = 0, link_i_n = 0;
+    Link* new_links = (Link*) safe_calloc(1, sizeof(Link));
+
+    for (i = 0; i < link_len; i++) {
+        link_i_n = system->lines[system->links[i].id_line].n_stops - 2;
+        if (link_i > 0 && i > 0 &&
+            system->links[i].id_line != system->links[i - 1].id_line) {
+            link_i = 0;
+        }
+        if (system->links[i].id_start != stop_id &&
+                system->links[i].id_finish != stop_id) {
+            new_links[new_links_count++] = system->links[i];
+            new_links = safe_realloc(new_links,
+                (new_links_count+1)*sizeof(Link));
+        } else {
+            if (link_i_n - link_i <= 1)
+                *updated_stops = update_stop_last(system, *updated_stops,
+                    stops_len, stop_id, i);
+            skip_over_link(system, &i, &link_i, link_i_n,
+                            &new_links, &new_links_count, stop_id);
+            *updated_lines = add_to_filtered_array(*updated_lines,
+                system->links[i].id_line, lines_len);
+        }
+        link_i++;
+    }
+    update_arrays_stop(system, stop_id, new_links_count, new_links);
+}
+
 
 void update_arrays_stop(Network *system, int id, int new_count, Link *new) {
     int i;
@@ -187,4 +202,37 @@ int* update_stop_last(Network *system, int *array, int* len, int id, int i) {
     }
     array = safe_realloc(array, (*len + 1)*sizeof(int));
     return array;
+}
+
+
+void skip_over_link(Network *system, int *i, int *link_i, int link_i_n,
+                        Link** new_links, int *new_link_count, int stop_id) {
+    int j = -1, link_len = system->link_count;
+    Link next = {0};
+
+    if (!(!*link_i && system->links[*i].id_start == stop_id) &&
+        !(*link_i == link_i_n && system->links[*i].id_finish == stop_id)) {
+        for (j = *i; j < link_len - 1; j++) {
+            next = system->links[j + 1];
+            if (next.id_finish != stop_id && 
+                next.id_line == system->links[*i].id_line) {
+                j++;
+                break;
+            } else if (next.id_line != system->links[*i].id_line || 
+                        (next.id_finish == stop_id && j == link_len - 2)) {
+                j = -1;
+                break;
+            }
+        }
+        if (j != -1) {
+            system->links[*i].id_finish = system->links[j].id_finish;
+            system->links[*i].duration += system->links[j].duration;
+            system->links[*i].cost += system->links[j].cost;
+            (*new_links)[(*new_link_count)++] = system->links[*i];
+            *new_links = safe_realloc(*new_links, 
+                ((*new_link_count)+1)*sizeof(Link));
+            *link_i += j - *i;
+            *i += j - *i;
+        }
+    }
 }
