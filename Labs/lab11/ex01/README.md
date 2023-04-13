@@ -33,3 +33,19 @@ e deverá ser manipulada pelas seguintes funções:
 2
 1
 ```
+
+
+# Evaluation
+
+2023-04-09T23:37:00
+
+## Test 1: [+ Accepted+].
+## Test 2: [+ Accepted+].
+## Test 3: [+ Accepted+].
+
+
+## Number of passed tests: 3/3
+
+
+Your code will not be reevaluated if you submit before 2023-04-09 23:38:00 @ Lisbon, Portugal. You need to wait 1 minute(s).
+
