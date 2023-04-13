@@ -27,7 +27,7 @@ int main() {
  * 1 -> Keep the program open after executing command
  * 0 -> Close the program
 */
-int command_handler(Network *system) {
+int command_handler(Network* system) {
     char option = getchar();
 
     if (option == 'c') {
@@ -57,9 +57,9 @@ int command_handler(Network *system) {
  * Token indeces:
  * 0 -> line name; 1 -> inverso argument
 */
-void command_add_list_lines(Network *system) {
+void command_add_list_lines(Network* system) {
     int i, args;
-    char **tokens = safe_calloc(CMD_C_ARGS, sizeof(char*));
+    char** tokens = safe_calloc(CMD_C_ARGS, sizeof(char*));
     for (i = 0; i < CMD_C_ARGS; i++)
         tokens[i] = safe_calloc(1, sizeof(char));
 
@@ -81,10 +81,10 @@ void command_add_list_lines(Network *system) {
  * Token indeces:
  * 0 -> stop name; 1 -> latitude; 2 -> longitude
 */
-void command_add_list_stops(Network *system) {
+void command_add_list_stops(Network* system) {
     int i, args, result;
     double lat = 0, lon = 0;
-    char **tokens = safe_calloc(CMD_P_ARGS, sizeof(char*));
+    char** tokens = safe_calloc(CMD_P_ARGS, sizeof(char*));
     for (i = 0; i < CMD_P_ARGS; i++)
         tokens[i] = safe_calloc(1, sizeof(char));
 
@@ -111,9 +111,9 @@ void command_add_list_stops(Network *system) {
  * Token indeces:
  * 0 -> line name; 1 -> start_stop; 2 -> end_stop; 3 -> cost; 4 -> duration
 */
-void command_add_links(Network *system) {
+void command_add_links(Network* system) {
     int i, args, result;
-    char **tokens = safe_calloc(CMD_L_ARGS, sizeof(char*));
+    char** tokens = safe_calloc(CMD_L_ARGS, sizeof(char*));
     for (i = 0; i < CMD_L_ARGS; i++)
         tokens[i] = safe_calloc(1, sizeof(char));
 
@@ -136,7 +136,7 @@ void command_add_links(Network *system) {
 }
 
 /* Function for listing line intersections - 'i' command */
-void command_list_intersections(Network *system) {
+void command_list_intersections(Network* system) {
     short i, len = system->stop_count;
     for (i = 0; i < len; i++) {
         if (system->stops[i].n_lines > 1) {
@@ -147,9 +147,13 @@ void command_list_intersections(Network *system) {
     }
 }
 
-void command_delete_line(Network *system) {
+/*
+ * Function for deleting lines - 'r' command
+ * Token indeces: 0 -> line name
+*/
+void command_delete_line(Network* system) {
     int args, result;
-    char **tokens = safe_calloc(CMD_R_ARGS, sizeof(char*));
+    char** tokens = safe_calloc(CMD_R_ARGS, sizeof(char*));
     tokens[0] = safe_calloc(1, sizeof(char));
 
     args = tokenize(tokens, CMD_R_ARGS);
@@ -161,9 +165,13 @@ void command_delete_line(Network *system) {
     free_str_arr(tokens, CMD_R_ARGS);
 }
 
-void command_delete_stop(Network *system) {
+/*
+ * Function for deleting stops - 'e' command
+ * Token indeces: 0 -> stop name
+*/
+void command_delete_stop(Network* system) {
     int args, result;
-    char **tokens = safe_calloc(CMD_E_ARGS, sizeof(char*));
+    char** tokens = safe_calloc(CMD_E_ARGS, sizeof(char*));
     tokens[0] = safe_calloc(1, sizeof(char));
 
     args = tokenize(tokens, CMD_E_ARGS);
@@ -173,67 +181,4 @@ void command_delete_stop(Network *system) {
             printf("%s: %s", tokens[0], ERROR_NO_STOP);
     }
     free_str_arr(tokens, CMD_E_ARGS);
-}
-
-/*
- * Populates the tokens array with the received command arguments
- * Return Value: Number of used tokens
-*/
-int tokenize(char **tokens, int len) {
-    /* quote keeps track if an argument is in quotes */
-    int i = 0, quote = 0, j = 0;
-    char c;
-
-    while((c = getchar()) != '\n') {
-        if (i < len) {
-            if (c == '\"') {
-                /* Enter ou exit quote mode */
-                quote++;
-                continue;
-            }
-            else if (isspace(c) && !(quote % 2) && j != 0) {
-                j = 0;
-                i++;
-            }
-            if ((j == 0 && (!isspace(c) || (quote % 2))) || j != 0) {
-                tokens[i][j++] = c;
-                tokens[i] = safe_realloc(tokens[i], j + 1);
-                tokens[i][j] = '\0';
-            }
-        }
-    }
-    return used_tokens_len(tokens, len);
-}
-
-/*
- * Auxiliary Function returns the amount of tokens
- * that were populated by the tokenize function
-*/
-int used_tokens_len(char **tokens, int len) {
-    int i, args = 0;
-    for (i = 0; i < len; i++) {
-        if (tokens[i][0] != '\0')
-            args++;
-    }
-    return args;
-}
-
-/*
- * Checks if `inverso` argument is correct
- * Return Values:
- * 1 -> argument is correct
- * 0 -> argument not correct
-*/
-int check_inverso(char *inv) {
-    int i, len = strlen(inv) + 1;
-    for (i = 0; inv[i] != '\0'; i++) {
-        if (len <= INVERSO_ABV_LIMIT || len > INVERSO_LENGTH) {
-            return false;
-        } else {
-            if (inv[i] != INVERSO[i]) {
-                return false;
-            }
-        }
-    }
-    return true;
 }

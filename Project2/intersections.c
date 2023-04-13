@@ -9,11 +9,11 @@
 #include <stdlib.h>
 
 
-/* 
- * Receives a Network object and a name of a stop and displays 
+/*
+ * Receives a Network object and a stop id. Displays
  * every line that intersects this stop
 */
-void print_intersections(Network *system, int stop_id) {
+void print_intersections(Network* system, int stop_id) {
     int i, array_len = 0, link_len = system->link_count;
     int curr_line;
     int* line_ids = (int*) safe_calloc(1, sizeof(int));
@@ -36,10 +36,10 @@ void print_intersections(Network *system, int stop_id) {
  * Standard implementation of selection sort that compares line names
  * Receives a Network object, an array of line ids and its length
 */
-void selection_sort(Network *system, int *array, int len) {
+void selection_sort(Network* system, int* array, int len) {
     int i, j, min = 0;
     int aux;
-    
+
     for (i = 0; i < len - 1; i++) {
         min = i;
         for (j = i + 1; j < len; j++) {

@@ -15,7 +15,7 @@
  * the information received is correct to create a new link
  * Returns 1 if operation was successful or returns an error code
 */
-int check_link_args(Network *system, char **tokens) {
+int check_link_args(Network* system, char** tokens) {
     int result, ids[3];
     int lineId = get_line_id(system, tokens[0]);
     int stop_startId = get_stop_id(system, tokens[1]);
@@ -46,7 +46,7 @@ int check_link_args(Network *system, char **tokens) {
  * the cost and duration.
  * The function decides where to add the link in system->links[]
 */
-int add_link(Network *system, int *ids, double *cost_dur) {
+int add_link(Network* system, int* ids, double* cost_dur) {
     int i, curr_line, len = system->link_count;
     for (i = 0; i < len; i++) {
         curr_line = system->links[i].id_line;
@@ -72,16 +72,17 @@ int add_link(Network *system, int *ids, double *cost_dur) {
  * cost and duration, and a pos flag that specifies if the link should be added
  * and the start or at the end of the links
 */
-void add_link_aux(Network *system, int *ids, double *cost_dur, char pos) {
+void add_link_aux(Network* system, int* ids, double* cost_dur, char pos) {
     int i = 0, *len = &(system->link_count);
 
     (*len)++;
     if (pos) {
+        /* Loop until it finds the first link from the specified line */
         for (i = 0; i < *len - 1 && system->links[i].id_line <= ids[0]; i++);
         move_links(system, i);
         configure_link(system, ids, cost_dur, i);
     } else {
-        /* Loop until it finds the correct index */
+        /* Loop until it finds the last link from the specified line */
         for (i = 0; i < *len - 1 && system->links[i].id_line != ids[0]; i++);
         move_links(system, i);
         configure_link(system, ids, cost_dur, i);
@@ -100,8 +101,8 @@ void add_link_aux(Network *system, int *ids, double *cost_dur, char pos) {
  * an array that contains the cost and duration and the index of where to add
  * the new link in system->links[]
 */
-void configure_link(Network *system, int *ids, double *cost_dur, int pos) {
-    int *len = &(system->link_count);
+void configure_link(Network* system, int* ids, double* cost_dur, int pos) {
+    int* len = &(system->link_count);
 
     system->links[pos].id_line = ids[0];
     system->links[pos].id_start = ids[1];
@@ -114,10 +115,10 @@ void configure_link(Network *system, int *ids, double *cost_dur, int pos) {
 
 /*
  * Receives a Network object and the index of where to add a new link
- * and moves every element from system-links[pos] to the right by one index
+ * and shifts every element from system-links[pos] to the right by one index
  * This is used when a link needs to be added at the start
 */
-void move_links(Network *system, int pos) {
+void move_links(Network* system, int pos) {
     int len = system->link_count;
 
     memmove(
