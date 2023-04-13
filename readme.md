@@ -16,11 +16,10 @@ make
 ./proj2
 ```
 
-To run the **Lab** files compile manually *for now* (will add makefile in the future)
+To run the **Lab** files follow the example:
 ```bash
-Example with gcc:
+make    // Lists all available files
 
-cd Labs/lab05
-gcc ex05.c -o ex05
-./ex05
+make lab05/ex03/ex03    // Compiles lab05/ex03/ex03.c
+./lab05/ex03/ex03.o
 ```
