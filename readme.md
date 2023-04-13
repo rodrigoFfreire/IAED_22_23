@@ -16,10 +16,9 @@ make
 ./proj2
 ```
 
-To run the **Lab** files follow the example:
+To run the **Lab** files use `make` and follow the example:
 ```bash
-make    // Lists all available files
-
-make lab05/ex03/ex03    // Compiles lab05/ex03/ex03.c
+cd Labs
+make lab05/ex03/ex03
 ./lab05/ex03/ex03.o
 ```
