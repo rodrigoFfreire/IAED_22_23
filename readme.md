@@ -16,6 +16,8 @@ make
 ./proj2
 ```
 
+Same applies to **TP (Teste Prático)**...
+
 To run the **Lab** files use `make` and follow the example:
 ```bash
 cd Labs
